@@ -1,2 +1,3 @@
 # Daily-Study
-Everyday Study Notes
+Everyday Study Notes Created by Lei
+
