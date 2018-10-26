@@ -1,0 +1,145 @@
+npm: 
+npm is the package manager for javascript;
+
+JavaScript package manager; 
+
+ember 架构； Linkedin所有的架构都是用ember写的；所以Linkedin申请要学习ember；
+
+如何发布一个npm 包；
+
+npm init
+
+name: 
+
+version:
+package.json: 包管理；
+
+npm要sign up一个account；
+
+
+npm adduser
+username：
+password:
+Email:
+
+
+package.json
+
+subl index.js
+
+edit: 
+console.log("This is from my first npm package");
+
+
+npm publish 发布包；
+
+cd Projects
+mkdir demo-npm-usage
+
+ll
+npm init
+
+npm install --save demo-npm-showcase
+
+ll node_modules
+
+subl server.js
+
+edit:
+
+require("demo-npm-showcase");
+
+node server.js
+
+subl index.js
+
+console.log("This is from my first npm package again");
+
+
+subl package.json
+
+change "version":"0.0.1" to "0.0.2"
+
+npm publish
+
+go to demo-npm-usage: 
+rm -rf node_modules
+
+subl package.son
+change version to ^0.0.2, but not change the version 0.0.1
+npm install
+
+npm unpublish --force
+撤销最后一个版本；
+npm unpublish --force
+
+发布一天以上的包就不能删掉了；
+
+javascript date show in different timezone;
+
+Ansible 用来 在启动好的ec2 cluster里面装各种各样的东西
+
+云端的redis
+
+ElastiCache
+
+
+Route53 is used to buy domain name;
+
+
+Apache kafka;
+Apache zookeeper
+
+
+Apache kafka on AWS: Kinesis;
+
+EMR: Elastic MapReduce
+
+Ember.js:
+
+Why use Ember.js
+
+Unique features:
+	Pattern Based(Convention not Configuration)
+		1.App, Routes,Models, Controllers, Views, Components, Templates
+		2.Creates best practices
+		3.Think about outsourcing..
+	Ember Runloop
+	Data(RestAdapter, LocalAdapter, CustomAdapter)
+	Handlebars.js Templating
+
+Backbone.js features
+Minimalistic
+Modular
+Perfect OOP design
+Over 100 available extensions:
+http://github.com/documentcloud/backbone/wiki/Extensions,-plugins,-Resources
+Community
+
+
+Meteor:全栈的架构；前端用的Blaze 与amber类似，后端是nodeJs +mongoDB； 全栈的data binding；
+
+好处：简单； 比nodejs + angular 快；和React结合较好；
+
+坏处： 没有RESTful；
+spring现在很高端；用的是Java；
+
+
+Socket Programming 或者是design 的方法；
+
+公司会更在意一些简单的design 和基础知识的理解；
+
+
+ java vehicle_builder.server.VehicleBuilderServer 8888
+
+
+ java vehicle_builder.client.VehicleBuilderClient 127.0.0.1 8888
+
+
+ create lei 8000
+ create sylvie 120000
+
+ quit
+
+ java vehicle_builder.client.VehicleBuilderClient 127.0.0.1 8888
+
