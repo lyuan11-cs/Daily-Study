@@ -1,0 +1,255 @@
+Outline:
+Cookie vs Token Based Authentication
+Advantages of Token Based Authentication
+Auth0: authentication as a service
+Integrate Auth0 Authentication with Angular2 and NodeJS(coding)
+
+
+Cookie Based Authentication:
+What is Cookie?
+An HTTP cookie(also called web cookie, Internet cookie, browser cookie or simply cookie) is a small piece of data sent from a website and stored on the user's computer by the user's web browser while the user is browsing. Cookies were designed to be a reliable mechanism for websites to remember stateful information(such as items added in the shopping cart in an online store) or to record the user's browsing activity. (Including clicking particular buttons,logging in, or recording which pages were visited in the past)
+
+
+Cookie Based Authentication vs Token Based Authentication:
+
+Cookie Based Authentication
+
+Traditional Cookie-Based Auth
+
+Browser      Server
+
+Default, tried-and-true method for handling user authentication for a long time.
+Stateful, the server needs to keep track of active sessions in a database, while on the front-end a cookie is created that holds a session identifier;
+
+Token Based Authentication 
+
+What is Token?(Token 有很多标准)
+
+JSON Web Tokens(JWTs)
+
+JSON Web Token is an open standard that defines a compact and self-contained way for securely transmitting information between parties as a JSON object;
+
+Header and Payload Base64 encoded , NOT encrypted
+
+Store any type of metadata in payload
+
+Token Based Authentication:
+Gained prevalence over the last few years due to rise of single page applications,web APIs and the Internet of Things(IoT)
+
+Stateless. The server does not keep a record of which users are logged in or which JWTs have been issued. Instead, every request to the server is accompanied by a token which the server uses to verify the authenticity of the request.
+
+Advantages of Token Based Authentication:
+Stateless,Scalable and Decoupled
+	Server's only job is to sign tokens on a successful login request and verify that incoming tokens are valid, no lookup;
+Cross Domain and CORS
+	Trivial to expose APIs to different services and domains, while cookies only work with singular domains and sub-domains
+
+Store Data in the JWT
+	store any type of metadata, as log as it's valid JSON, while cookie can only store session id
+Performance
+	Decoding a token is faster than looking up a session, also storing permission level in token saves extra lookup ops.
+Mobile Ready
+	A single API can serve both the browser and native mobile platforms like iOS and Android. Native mobile platforms and cookies do not mix well.
+
+
+Why Auth0?
+Auth0: authentication as a service:
+
+Takes all of the complexity out of authentication and makes identity easy for developers
+
+Easy to integrate and manage users
+
+Great for Minimum Viable Product
+
+Integrate Auth0 Authentication with Angular2 and NodeJS
+
+Features / User stories(who does what to ...):
+
+1.Sign up /User can signup by email/password,and login to see username and a dropdown list.
+2.Social login/User can directly login with Google account
+3.Profile/User clicks on "profile" button in dropdown list to see a profile page, and another tab to change password.
+4.Access control/ 
+	a.User cannot access profile page if not logged in, i.e directly type url in browser
+	b.Admin can login with role "admin" and add problem , other users cannot see the "new-problem" component
+	c.User is prompted to login if clicking "submit“ button in editor page without login.
+
+
+在client端安装：
+npm install --save auth0-lock
+
+npm install --save angular2-jwt
+
+cd src/app/services:  ng g s auth
+
+Outline:
+Redis 介绍与实践
+Nginx介绍与实践
+Websocket介绍与实践
+
+
+Redis:
+Redis is an open source(BSD licensed), in-memory data structure store, used as database, cache and message broker. 
+
+In-memory data structure store:
+Data Structure                Operations
+Strings						SET,GET,APPEND
+Hashes						HSET,HGET
+List                        LPUSH,LRANGE,LSET,LTRIM
+Set                         SADD,SMEMBERS
+Sorted Set                 ZADD,ZRANGE,ZRANGEBYSCORE
+
+分两大类：一类是set ，一类是get；
+
+SET，HSET，LSET 可以很容易的却分出是对什么数据结构进行的操作；
+强行做了一次类型检查；一个好的API的设计；
+
+redis.io -> try it  interactive tutorial
+set name lei
+get name
+
+hset hash1 name lei
+hget hash1 name
+
+lpush list1 a
+lpush list1 b 
+lpush list1 c
+
+lrange list1 0 -1
+
+
+lpush 的l意思是left； 从左到右；
+
+set age 73
+type age   -> "string"
+
+incr age   -> age = 74
+age虽然是string，但是可以自增加1；
+
+append age haha
+->6   是字符串的长度；
+但是现在再
+incr age
+->error
+
+支持把数据存储在数据结构中；
+Redis架构：
+Single-threaded, Event loop 架构；
+NodeJS
+
+Redis处理数据库读写的请求远大于其他数据库；原因：
+1.内存读写；2.Event loop架构；
+
+例子：大学食堂：一堆client涌向server；
+绝大多数server是多线程的架构；事实上只有一个CPU；分时的机制；
+
+问题： context switch；
+
+单线程不用交接，没有context-switch
+
+异步IO 与同步IO；
+同步IO：blocking IO；干很长时间的一件事，但是其他人却在干等；
+异步IO：当处理一个不占用CPU的任务的时候，扔到一边去；CPU先处理别的需要用CPU的事情；Async
+
+redis为什么快：
+单线程，异步IO，快速处理很多请求；没有等待的代价，没有context switch的代价；
+
+Context switch在多进程的时候比较严重；
+在多线程的时候，不同的线程之间有一些共享的资源，会存在读写冲突，或者写写冲突问题；
+加锁；用加锁的方式处理线程冲突问题;
+
+单线程，event-loop 不会有两个人同时访问一个数据；一定不会同时处理两个请求；
+
+Redis 第二个用途：第一个是数据库；
+第二个是用来做Cache:
+
+App -> 1.Check if book is in cache   Cache(redis) -> 3.If not in cache -get from database, save to cache and read   Database (Mongo)
+App <- 2. if in cache -  read it     Cache(redis) <-              Database(Mongo)
+
+在某一个地方存着数据，在另一个地方再存一份；目的是下次再读数据的时候，让读取速度更快一点或者更方便一点；
+
+
+Cache 特点：
+1.Cache is everywhere；
+2.Cache不用非常的reliable；
+有叫Hit，没有叫miss；
+3.对Cache 的读取一定要非常快；
+4.Cache要比存源数据的地方要贵；
+5.一般Cache都比较小；
+
+
+Cache的替换策略
+
+读一个地方的天气的时候，可以先看Cache；
+MongoDb也算是一个cache；不是数据的来源；
+
+Cache Replacement:
+
+LRU Cache : Least Recent Used
+最不常用的数据会被剔除；
+
+
+Cache Pre-load 预加载；
+开启server的时候就读一些数据；这样启动了之后再读取数据就不至于都Cache missed；
+
+第三个用途： Message Broker；排名第一的是Kafka；
+Publish and Subscribe 的模型；
+
+Redis pub/Sub example(DEMO)
+Subscriber 1             Publisher
+SUBSCRIBE foo			PUBLISH foo "Hello"
+SUBSCRIBE foo boo       PUBLISH boo "world"
+
+
+Nginx介绍与实践：
+
+Nginx是web server：
+
+Client Tier    Web Tier   Business Logic Tier   Database Tier
+CLient <-> Web Server <-> App Server <-> Database
+
+Send Request   Route HTTP Request   Handle Request   Handle Query Request Store Data
+
+Web Server: Apache, Nginx,Tomcat(Java application), Node.js;
+
+Nginx做node server； NodeJs做application server；
+
+The features that Nginx provides:
+Reverse Proxy
+Load Balancing
+Cache
+
+Proxy & Forward Proxy
+代理： 代为打理；
+站在用户面前，代为打理连接Internet的事务；
+
+Reverse Proxy:
+Hide Original Server;
+Application Firewall; 安全
+SSL Termination
+Load Balance
+Cache
+Compression:压缩，解压缩；
+
+Load Balancing:
+1.Round Robin, Optionally weighted
+2.Least Connected, optionally weighted
+3.IP Hash ： 同一个IP地址，一定得到同一个Hash value；可能造成一个特别忙， 其他特别闲；
+4.Generic Hash
+5.Least Time(Nginx Plus), optionally weighted
+
+Apache 用的是多线程的架构；
+Nginx 用的是单线程异步IO的架构；
+
+Load new configuration with no downtime;
+
+
+
+Load new NGINX binary with no downtime;
+
+Update NGINX binary on disk SIGUSR2 master -> new and old instances of NGINX run in parallel and both will handle connections;-> SIGQUIT the old Master process and it will terminate gracefully; 
+
+WebSocket的介绍与实践；
+
+
+
+
