@@ -1,0 +1,84 @@
+今天看了视频解决了那个问题； springboot的版本：
+首先是尝试了demo的那个文档；将dependency里面的内容都copy到自己的文档里面
+Video： From Zero to Hero with Spring Boot - Brian Clozel；
+
+ls -al
+
+fat jar
+compile: 
+
+java -jar xxx.jar
+
+class, annotation, 没有任何的部署，没有任何的代码； 8080端口Tomcat已经在run了；
+
+compile： mvn clean install
+ctrl + c 退出 ； 
+
+
+ctrl + r back index search；
+
+Location service  running location service
+
+IntelliJ使用小技巧： 
+
+lombok instead of setter & getter;
+annotation 可以自动生成getter & setter； 
+
+
+maven 里面的叫dependency 不叫plugin；
+
+lombok这个plugin是intellij的plugin；
+Spring不仅帮助处理query还帮忙分页；
+
+重点1： （Annotation: @Autowired  
+
+spring dependency injection 依赖注入；三种方法
+不需要new之类的东西，直接注入进来，不需要是怎么生成的直接注入就可以了；
+1.constructor injection 
+
+2.setter injection
+
+3.field injection;@autowired
+
+Controller mvc里面； 
+
+lombok conflict with getter & setter 
+
+will use  getter & setter;
+spring 可以定制application 的启动端口； 
+
+application.yml
+
+postman: 
+后端工程师测试是否work， 用postman测试前段是否work
+HTTP的各种请求；
+
+postman
+Jsonview有层次感；
+
+Annotation的使用方法： 
+
+看Annotation中包含哪些field；看一下Annotation 的文档；
+
+REST controller；
+常见的Annotation要记住；
+@component @service @
+当spring 启动时，spring container会扫描这些Annotation；
+被Annotation标记的这些class，spring会生成这些bean；然后会把bean放在container里面；
+然后做dependency injection的时候这些bean就是available；所以有时候缺少bean运行不成功；
+
+Annotation只是告诉spring， 这些东西你要扫描； 是否要注入要取决于code；
+
+Annotation RestController 和 Controller 的区别
+
+@service标记class为一个service class； spring scan 所有的标记； 然后生成所对应的bean；
+
+看项目文档，如何用maven引入dependency；
+
+传统的三层架构：
+view
+service
+access
+前后端分离开来是传统的架构；
+
+
