@@ -1,0 +1,601 @@
+
+去公司第一天要自己安装环境，配置；
+Java开发基础知识
+Spring 框架以及原理；
+Spring MVC
+REST API
+Vagrant简介
+Maven简介
+Tomcat简介
+
+Java开发基础知识
+Java概述以及现状
+• Java多线程
+• Maven简介
+• Servlet基础
+• Java服务器工作原理
+• Java和其他语言对比
+
+Java: 20 Years of Java
+Java Language
+Static Typing
+1.verbose;
+Object Oriented
+
+JVM:对编程语言贡献很大；
+C/C++ 内存管理非常麻烦；
+Specification
+JVM规定了Java class文件长什么样子；
+Implementation
+Instance:一个machine上面运行java -jar会有一个instance；
+Basic JVM architecture：
+JVM Memory:
+Heap
+Stack
+
+Garbage Commection(GC)
+Automatic memory management；
+Mark Sweep；
+
+面试常见问题：
+what is Heap ? What is Stack? 这两个有什么用？
+Stack 是一个内存区，存储local variable 和function call；这些是在stack上面进行保存的；
+
+Java Object； 这些Object是在Heap上面进行存储的；不管对象是怎么生成的；
+local variable生成的对象也是存储在Heap上；
+堆上的东西通过Garbage Commection来管理内存，Java 的优势就是程序员不用担心内存管理的问题；
+
+两种exception：
+1.OutofMemory：是由于heap， memory leak； 由于一个数组里存储了太多的object，结果没有被GC回收；
+2.Stack Overflow ：stack里面容不下所有的variable的声明；
+像recursive call进入死循环，有所的variable都堆积在stack上面；造成Stack Overflow；
+
+GC:JVM 是用Mark sweep；在堆上会把内存分成不同的区域，如果没有被引用就会被mark；然后如果GC时候，就会sweep；
+Mark sweep以后就有一个compact；
+
+JDK(Java Development Kit)(既包含了JRE)
+A superset of a JRE and contains tools for Java
+programmers, e.g. a javac compiler
+JRE(Java Running Environment)(Java 的实现)
+It includes a Java Virtual Machine implementation
+together with an implementation of the Java Class
+Library
+
+JVM 包含了一部分JIT；
+JIT-­‐ Just In Time Compilation
+
+In a bytecode-compiled system, source code is translated to an intermediate representation known as bytecode. Bytecode is not the machine code for any particular computer , and may be portable among computer architectures.
+
+The bytecode may then be interpreted by , or run on a virtual machine. The JIT compiler reads the bytecodes in many sections(or in full, rarely) and compiles them dynamically into machine languages so the program can run faster.
+
+Java Language:
+	Everything is object
+	Static typing
+	Object Oriented(Encapsulation, Inheritance, Polymorphism)
+
+Java 是否支持多继承?
+理论上是不支持多继承的；但是多继承通过Interface 实现的；
+
+所有的东西都是一个class；class里面有field， method， accessor ，annotation;
+
+Annotation是发展的一个趋势；用起来方便；
+
+Java 多线程：
+	1.Implements runnable interface 
+	2.Extends Thread class
+	3.Synchronized Methods andStatements
+
+推荐实现runnable interface， 因为java 不支持多继承；
+经典的多线程的模型；
+
+多线程同步；
+method 上面可以进行同步；
+statement里面进行同步；
+Java 官方的Oracle 文档；
+
+Immutable Object：对象创建了之后就没有办法进行更改；
+	An object is considered immutable if its state cannot change after it is constructed
+如何实现：
+使用final 关键字；值不能更改；
+
+对象可以被引用；大规模系统的话主要做insert操作；
+
+Servlet: 
+Browser -> request Web Listener -> request Servlet container -> JDBC Database
+Browser<- Response Web Listener <- Response Servlet Container <- JDBC database
+常见的Java
+Web服务器
+Tomcat
+Jetty
+JBOSS
+Weblogic
+WebSphere
+
+Web server 
+如何去响应一个web 请求；
+
+Application Server：包含了servlet container 又包含了其他的library;
+缺点：
+1.启动起来比较慢；2.每一个applicaiton server都有自己的库实现，以后迁移起来比较麻烦；
+
+Spring 开发基础知识
+
+Spring框架以及原理
+• Spring框架概述
+• Spring核心架构
+• IoC & Dependency Injection
+• Bean初始化以及管理
+• Spring容器生命周期： Bean Factory
+• 什么是Component Scan
+• Concurrency in Spring
+• Spring框架与Java EE的对比
+
+Spring 是否是一个thread safe的？
+Spring Framework Core overview：
+
+最核心的部分是Core Container：
+Beans Core Context SpEL； Spring Expression Language(表达式的解析)
+Bean injection
+
+AOP Aspects: 提供一些工具更好的实现OOD；
+Data Accrss/Integration
+JDBC  ORM
+OXM   JMS
+Transactions 数据库事务的处理
+
+Web
+WebSocket  Servlet
+Web        Porilet
+
+What is Spring Framework over all?
+	Bean Container that manages your Java Beans 
+	Manage lifecycle of your Java beans, from creation to destroy in certain scopes
+
+Spring Framework： Java Bean 的container；管理Java Bean 的声明周期；
+
+Bean lifecycle and scopes
+Singleton： Spring Bean 的default scope；
+Prototype
+Request
+Session
+GlobalSession
+(portlet environment only)
+Application
+WebSocket
+
+Singleton： Spring Bean 的default scope；
+Only one instance is ever created...
+..and this same shared instance is injected into each collaborating object.
+
+Prototype scope:
+A brand new bean instance is ever created...
+...and this same shared instance is injected into each collaborating object
+
+Singleton只有一个实例被生成；Prototype 是每次需要用到AccountDao的实例时候，就会生成一个新的；系统的负荷会很大，非常慢；
+
+Request:每一个HTTp请求都会去访问一个新的bean instance
+	Return a new bean instance per HTTP request
+Session: 状态很难同步；每个HTTP session； 用户在整个绘画阶段只有一个bean instance
+	Return a new bean instance per HTTP session
+
+@RequestScope
+public class LoginAction{
+	//...
+}
+
+Status: 
+Spring synchronization 是需要自己保证的；为了不使用synchronization的method；
+需要把Synchronization做成status； 无论beans传什么样的值都没有之前的状态；
+比如传一个counter，就不该记着之前传递的值是什么；尽量避免在beans里面存储state；
+做成immatable：一旦对象被创建之后，就没法被更改；
+
+
+Application:
+	Similar to Singleton scope, but Bean is created per ApplicationContext, not ServletContext
+
+XML: 没有compiler帮忙查错；
+通过Java configuration或者Annotation做Spring config；
+
+IoC & Dependency Injection:
+对象之间的依赖；
+Inversion of Control & Dependency Injection
+三个对象之间的依赖；B对象要实现自己的功能，要初始化A对象和C对象；
+两个对象生成好之后交给B的constructor； B就可以实现A和C的功能；B对象要知道A和C是怎么生成的；
+这样dependency越来越复杂，对象之间需要知道的东西越来越多，没办法解耦；所以Spring 引入了
+Inversion of Control & Dependency Injection; B需要使用A或者C的时候，只需要从Spring Container 注入；实现了解耦的目的；
+
+Why Dependency Injection?
+	When you use electricity, do you care how it's generated？
+
+How to do dependency injection in Spring?
+@Bean
+@Autowired or @Inject
+Field injection
+Constructor injection(Dependency is enforced)
+Setter injection
+三种Injection的方法：
+用@Autowired做Injection
+@Autowired
+private AnotherBeanClass someBean;
+
+@Autowired
+publib void setSomeBean(AnotherBeanClass someBean){
+	this.someBean = someBean;
+}
+
+@Autowired
+public YourBeanClass(AnotherBeanClass someBean){
+	this.someBean = someBean;
+}
+
+Which dependency injection method shall I use？
+	class MyComponent{
+		@Inject MyCollaborator collaborator;
+		public void myBusinessMethod(){
+			collaborator.doSomething();
+		}
+	}
+
+	MyComponent component = new MyComponent();
+	component.myBusinessMethod();  //-> NullPointerException
+上面code的问题：如果collaborator的对象没有初始化，生成一个null 对象；
+当component调用的时候，就会出现NullPointerExeption
+Another Method:
+用Constructor Inject：
+可以做一些检查；通过Constructor 做一些检查，避免NullPointer；
+第二个好处是Testability
+class MyComponent{
+	private final MyCollaborator collaborator;
+	@Inject
+	public MyComponent(MyCollaborator collaborator){
+		Assert.notNull(collaborator, "not null!");
+		this.collaborator = collaborator;
+	}
+	public void myBusinessMethod(){
+			collaborator.doSomething();
+		}
+}
+
+
+Field Injection
+Constructor Injection
+
+Spring Container and Bean Factory
+BeanFactory is represented by
+org.springframework.beans.factory.BeanFactory interface. It is the main and the basic way to access the Spring Container. Other ways to access the spring container such as ApplicationContext, ListableBeanFactory, ConfigurableBeanFactory etc. are built upon this BeanFactory interface(extends/implements BeanFactory interface).
+
+BeanFactory interface provides basic functionality for the Spring Container
+	It provides DI/IOC mechanism for the Spring
+	It is built upon Factory Design Pattern
+	It loads the beans definitions and their property descriptions
+		from some configuration source (for example, from XML configuration file)
+	Instantiates the beans when they are requested like beanfactory_obj.getBean("beanId")
+
+BeanFactory interface provides basic functionality for the Spring Container
+	Wire dependencies and the properties for the beans according to their configuration defined in configuration source while instantiating the beans
+	Manage the bean life cycle by bean lifecycle interfaces and calling initialization and destruction methods;
+
+
+Component Scan
+	What is Component scan?
+	Why?
+	How to use component scan?
+	@ComponentScan(basePackage="com.lei.y")
+	@Component
+
+50
+Concurrency in Spring
+	How to design Thread Safe Bean?
+		1.make Objects immutable
+		2.Stateless, Stateless, Stateless：做成无状态的；
+		3.Think twice before you do synchronization
+		Static不是stateless； 是所有的object都会共享的field name；还是有状态的；
+
+What is Java EE?
+	Specification and a set of APIs for developing and running enterprise Java apps
+
+Enterprise Java Beans(EJB)
+	Enterprise JavaBeans(EJB) is a managed, server software for modular construction of enterprise software, and one of several Java APIs. EJB is a server-side software component that encapsulates the business logic of an application. The EJB
+	specification is a subset of the Java EE specification. An EJB web container provides a runtime environment for web related software components, including computer security, Java servlet lifecycle management, transaction processing, and other web services.
+
+
+
+Spring Beans 是否是thread safe？
+线程安全，有Synchronization；
+不是thread safe； 虽然scope 有different scope， 但是scope只是在创建的时候有不同的scope；
+当bean被访问的时候，spring 是没办法保证thread safety的；
+如果对同一个bean 多线程进行access的时候需要一定的synchronization；比较tricky的事情；
+如何设计spring bean 做到thread safe？
+
+
+Spring MVC：
+	What does controller look like?
+
+@Controller
+@RequestMapping("/pets")
+@SessionAttributes("pet")
+public class EditPetForm{
+	//...
+	@GetMapping
+	public String setupForm(@RequestParam("petId") int petId, ModelMap model){
+		Pet pet = this.clinic.loadPet(petId);
+		model.addAttribute("pet", pet);
+		return "petForm";
+	}
+
+	//..
+}
+
+Controller 有不同的写法
+MVC2.0 Controller:
+
+@RestController
+@RequestMapping("/api")
+
+@RequestMapping("/kml/{instanceId}")
+public byte[] getKmlInstance(@PathVariable Long instanceId)
+
+REST API基础
+什么是REST API
+为什么要用REST？
+什么是好的REST API？
+
+什么是REST API？
+通过一组状态的值来表示； 通过不同的动作表示不同的状态
+Representational State Transfer
+HTTP Verbs
+HTTP Status
+
+为什么要用REST？
+DECOUPING，DECOUPING，DECOUPING 解耦
+Standard
+Lightweight
+
+REST是基于HTTP；REST的Verbs都是HTTP规定好的，是非常标准的API；不需要关系是怎样实现的；
+系统之间的解耦；
+
+轻量级的；
+SOAP是很重的；用XML，非常笨重的用来描述东西的一种语言；
+
+什么是好的REST API？
+Glory of REST  级别越高越好
+Level 3：Hypermedia Controis
+Level 2： HTTP Verbs
+LEvel 1 : Resources
+Level 0 : The Swamp of POX
+什么是好的REST API？
+Resources
+Clear HTTP verbs
+Single VS Multiple
+
+Maven：
+Package and dependency management tool
+Maven Central
+Project Object Model(POM)
+What does POM look like?
+Maven commands
+
+
+Maven:
+	Why do we use Maven?
+	Have you used ANT?
+
+Maven Build Lifecycle: 
+	validate - validate the project is correct and all necessary information is available
+	compile - compile the source code of the project
+	test - test the compiled source code using a suitable unit testing framework.
+		These tests should not require the code be packaged or deployed
+
+	package - take the compiled code and package it in its distributable format, such as JAR
+	verify - run any checks on results of integration tests to ensure quality criteria are met
+	install - install the package into the local repository, for use as a dependency in other projects locally
+
+	deploy - done in the build environment, copies the final package to the remote repository 
+		for sharing with other developers and projects.
+
+
+Maven Dependency Scope:
+	compile
+	provided
+	runtime
+	test
+	system
+	import(only available in Maven 2.0.9 or later)
+Maven POM：
+
+Tomcat基础知识：
+The Apache Tomcat software is an open source implementation of the Java Servlet, JavaServer Pages, Java Expression Language and Java WebSocket technologie
+
+Tomcat compared with other servlet containers or application servers
+	Tomcat is just servlet container, i.e. it implements only the servlets and jsp specification. Glassfish and JBoss are full Java EE servers(including stuff like EJB, JMS,... ), with Glassfish being the reference implementation of the latest Java EE 6 stack. 
+
+Nginx + Tomcat
+动态用Tomcat， 静态用Nginx； Nginx还可以做load balance；
+Netty 异步的实现；debug起来比较麻烦；
+
+
+Spring 的原理要懂；
+
+What is Serialization?
+	Converting an object to bytes;
+
+What is Deserialization?
+	Converting bytes back to an object;
+Why do we use Serialization/Deserilization?
+	When we want to Persist the Object.
+	When we want the object to exist beyond the lifetime of the JVM.
+
+What are the use cases?
+	It is mainly used in Hibernate,RMI, JPA,EJB,JMS technologies
+	For example, JMS, publisher sends an object over the wire and receiver receives the object.
+
+JMS: Java Messaging Service
+How seriazation is performed in java
+	Implements java.io.Serializable interface
+	Define serierialVersionUID
+	Use ObjectOutputStream
+
+FileOutputStream fos = new FileOutputStream("t.tmp");
+ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+oos.writeInt(12345);
+oos.writeObject("Today");
+oos.writeObject(new Date());
+
+oos.close();
+Serialization/Deserilization 是有一定的安全性问题的；
+
+What is Spring？
+Spring at its core is a bean container that manages your beans and support dependency injection.
+
+
+Bean的创建和Dependency 的injection；
+
+Spring MVC(Model View Controller)
+
+@PostMapping： 所有的post请求
+public String processSubmit(@ModelAttribute("pet") Pet pet, BindingResult result, Model model){
+	...
+}
+BindingResult 和 Model
+
+当一个HTTP request 进来之后，先到Servlet container里面；
+Servlet container里面有运行的所有的Servlet；
+
+Servlet container 会把请求转发到dispatcher Servlet； 
+dispatch Servlet 只用来作请求的转发；
+
+MVC封装了一些简单易用的API；
+
+Delegate request to controller 去处理；
+Post请求direct 到controller里面去做处理， 之后会和数据库打交道，查询(可以创建，可以查询提取)
+中间有一些值，存储到model里面；model里面的data通过View template refer到model里面；
+view 会引用model的内容；页面会被渲染，重新交给DIspatcher servlet 然后重新返回给Browser；
+
+
+Spring MVC 的流程；
+
+现在前台都是用Angular 来做的；
+MVC2.0; 
+
+Dependency Injection:
+YBean.java
+public class YBean{
+	public String id;
+	public String name;
+
+	public YBean(String id, String name){
+		this.id = id;
+		this.name = name;
+	}
+}
+
+HelloWorldConfiguration.java
+
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.spring.uber")
+
+public class HelloWorldConfiguration{
+	@Bean
+	Qualifer("lei1")
+	public YBean createYBean(){
+		return new YBean("1","lei");
+	}
+}
+
+
+HelloWorldController.java
+
+@RestController
+public class HelloWorldRestController{
+	@Autowired
+	@Qualifier("lei1")
+	private YBean yBean:
+
+	@RequestMapping("/")
+	public String welcome(){
+		return " Hello world";
+	}
+
+	@RequestMapping(value = "/hello/{yourName}", method = RequestMethod.GET)
+	public Message showMessage(@PathVariable String yourName){
+		message msg = new Message(yourName, "Hello" +yourName);
+		System.out.print(yBean.name);
+		return msg;
+	}
+}
+
+如果有多个Bean 都返回YBean，怎么知道用哪一种？
+用@Qualifier()
+
+Spring 官方文档； Jersey
+servlet-context.xml
+
+Dependency Injection
+
+本地开发环境和服务器部署环境如何配置？
+Automation： 自动化部署；
+
+没有Automation完全没法做大规模服务器的开发与部署的；
+
+Maven 项目都有pom.xml
+会建立一个src 文件；
+test里面装所有的test;
+main里面包括所有的源代码；
+
+Spring 项目需要配置两个xml 文件：
+Old Classic Way to config Spring Container:
+web.xxl
+servlet context.xml
+
+现在用Java container 来配置；
+
+版本可能有版本兼容性的问题；
+
+Spring core 做dependency injection，没有关于web的东西；
+
+Maven Central repository
+
+
+Springframework和Jackson 之间有版本的冲突；
+Springframework带的Jackson 的版本不是最新的；
+
+用Maven管理，用maven 打包；
+
+REST API 对应不同的resources要有不同的action；
+打包成war file而不是jar file
+
+
+mvn clean install
+<packaging>war</packaging>
+
+打包好之后进行部署；
+
+Download apache tomcat 8.5.6
+access to apache-tomcat/bin
+sh ./startup.sh
+
+ls -al
+
+chmod -R u+x apache-tomcat-8.5.6
+cd bin
+sh ./shutdown.sh
+cd conf
+vim tomcat-users.xml
+
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<user username="admin" password="password" roles="manager-gui, manager-script"/>
+</tomcat-users>
+
+cd bin
+sh ./startup.sh
+
+localhost:8080
+然后选择war file 进行deploy
+
+localhost:8080/Hello world/hello/lei
+
+
+
