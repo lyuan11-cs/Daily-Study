@@ -1,0 +1,764 @@
+NoSQL 和MySQL的区别； 什么时候使用NoSQL/MySQL?
+MySQL: 对transactional 有要求的很高的
+
+structural Data 能建模的；
+Data Volume不是很大，但是
+对transactional 有要求的
+
+NoSQL 处理比较大的数据；
+扩展性比较好， 比较便宜；
+处理Non-structure Data；
+
+RabbitMQ
+
+学习数据存储：
+数据是怎么存的；
+数据是怎么查询的；
+
+Decoupling 系统解耦；系统都和MQ去打交道；
+Asynchronization；异步通信；
+
+Message Delivery Guarantee 三种：
+at least once
+at most once
+exactly once
+
+What is WebSocket?	
+	WebSocket is a computer communications protocol, providing full-duplex
+	communication channels over a single TCP connection
+Why do we need WebSocket?
+	Think about HTTP
+	Pull only
+How to enable "push" function without WebSocket?
+
+WebSocket and HTTP
+○ The WebSocket Protocol is an independent TCP-based protocol. Its only
+relationship to HTTP is that its handshake is interpreted by HTTP servers
+as an Upgrade request
+○ Two way communication
+
+HTTP 不支持push；
+
+
+WebSocket programming model
+Server
+Client
+Compare WebSocket with REST
+REST:
+Many URLs, Handful of verbs, links, stateless
+WebSocket:
+a WebSocket application may use a single URL only for the initial HTTP handshake. All messages thereafter
+share and flow on the same TCP connection. This points to an entirely different, asynchronous, event-driven,
+messaging architecture
+
+REST 是建立在HTTP之上的；
+
+Messaging architecture
+	1.WebSocket does imply a messaging architecture but does not mandate
+	the use of any specific messaging protocol. It is a very thin layer over
+	TCP that transforms a stream of bytes into a stream of messages (either
+	text or binary) and not much more. It is up to applications to interpret the
+	meaning of a message.
+	2.Low level protocol, like Servlet
+
+WebSocket：protocol
+
+STOMP
+○ Simple Text Oriented Messaging Protocol
+○ STOMP is a simple interoperable protocol designed for asynchronous
+message passing between clients via mediating servers. It defines a text
+based wire-format for messages passed between these clients and
+servers
+
+How to use STOMP over WebSocket?
+var url = "ws://localhost:61614/stomp";
+var client = Stomp.client(url);
+
+<script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+<script>
+	//use SockJS implementation instead of the browser's native implementation
+	var ws = new SockJS(url);
+	var client = Stomp.over(ws);
+</script>
+
+
+When to use WebSocket?
+○ client and server need to exchange events at high frequency and with
+low latency
+○ What about high frequency with high latency?
+○ What about low frequency with low latency?
+
+Socket和WebSocket原理是一样的，但是层面上不一样
+Socket：Linux操作系统的Socket
+WebSocket： 建立在TCP  connection上，是网络方面的 network programming
+原理一样：都有端口，都能传输东西；
+
+Spring WebSocket
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
+	@Override
+	public void registerStompEndpoints(StompEndpointRegistry registry){
+		registry.addEndpoint("/portfolio").withSockJS();
+	}
+	@Override
+	public void configureMessageBroker(MessageBrokerRegistry config){
+		config.setApplicationDestinationPrefixes("/app");
+		config.enableSimpleBroker("/topic","/queue");
+	}
+}
+
+
+
+
+Richardson's REST maturity model
+Glory of REST
+Level3: Hypermedia Controls：通过不同Hypermedia 的type
+Level2: HTTP Verbs：增删改查的操作；
+Level1: Resources;
+Level0: The Swamp of POX； 区分resources；把不同的resources放在不同的URL里面
+
+The HAL Browser
+
+lombok: 帮助写code
+
+HashCode
+Equals
+toString
+
+Do you want to use Spring Data REST for all your REST APIs?
+
+Spring Data REST 非常方便，只有增删改查的操作可以用，没有很多的业务逻辑可以用Spring Data REST；分情况考虑；
+
+Do you want to use MongoDB as database for all your applications?
+MongoDB有点是海量存储，查询方便；结构化数据的处理不太好；
+Schemaless：database没有表机构，所有的结构都在application code里面；
+Transaction 非常强的要用MySQL；
+关系型数据库对业务支持比较好；
+分情况考虑；
+
+Do you want to use RabbitMQ	as messaging queue for all your applications?
+Messaging： transaction比较慢；数据先通过messaging ，然后再传入到database；就比较慢；
+
+Do you want to use WebSocket for all your applications?
+High frequency and low latency 高频率低延迟；数据延迟低
+WebSocket是有开销的；建立网络连接；
+
+
+How to enable "push" capabilities without WebSocket?
+	Busy polling with Ajax
+	Comet
+	■ Comet defines several techniques that allow the server to send information to
+	the browser without prompting from a client.
+	■ With the help of an additional HTTP connection, Comet can even facilitate bidirectional communications over two HTTP connections
+
+Problems with those two approaches?
+○ Busy polling
+	■ Inefficient for both client and server
+○ Comet
+	■ Lack of standard implementation due the varying levels of support provided
+	by browser vendors for XHR and iFrames—the two building blocks of Cometstyle
+	communications.
+	■ Significant amount of overhead, both in terms of networking and
+	development, to manage two connections for communications
+
+WebSocket 通信协议
+
+Spring WebSocket:
+@Configuration
+@EnableWebSocketMessageBroker
+
+public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer{
+	@Override
+	public void configureMessageBroker(MessageBrokerRegistry config){
+		config.enableSimpleBroker("/topic/vehicles");
+		config.setApplicationDestinationPrefixes("/app");
+	}
+
+	@Override
+	public void registerStompEndpoints(StompEndpointRegistry registry){
+		registry.addEndpoint("/stomp").setAllowedOrigins("*").withSockJS();
+	}
+}
+
+Spring WebSocket
+@ServiceActivator(inputChannel = Sink.INPUT)
+public void updateLocationaddServiceLocations(String input) throws Exception{
+	CurrentPosition payload = this.objectMapper.readValue(input,CurrentPosition.class);
+	this.template.convertAndSend("/topic/vehicles",payload);
+}
+
+WebSocket Client:
+
+stompClient.subscribe("/topic/vehicles",function (m){
+	var updateMsg = JSON.parse(m.body);
+	handleUpdateMessage(updateMsg);
+});
+
+多个Application；multiple application；
+每个都启动了一个embedded tomcat； 每个service都是独立的；
+每个application都有一个端口；
+
+Microservices & Cloud Native Java Application
+
+
+Monolithic Application： 单一的application
+很大，很难处理，要投入很多人力物力去处理；
+小网站没什么问题，而且上手比较快；但是当业务逻辑越来越大，就无法满足需求；
+	A monolithic application is self-contained, and independent from other computing applications
+
+Can you think of an example of monolithic application?
+例子：
+面试：优化的算法，库的基础上，提出一些架构方面的考虑；
+Monolithic Application：
+Pros
+○ Simple at first
+○ In-process latencies
+○ Single codebase, deployment unit
+○ Resource-efficient at small scale
+Cons
+○ Communication gap and coordination overhead as application grows
+○ Poor enforcement of modularity
+○ Only vertically scaling
+○ Downtime, deployment failures
+○ Long build times
+○ Hard to manage
+
+第一版的创业东西都是Monolithic Application
+
+Spring cloud
+
+DevOps：developer 发展的一个方向；
+
+12-factor Application：开发程序12个要遵守的守则或是因素
+○ Methodology for building software-as-a-service apps
+○ Declarative formats for setup automation
+○ Maximum portability between execution environments： 复用很多东西；
+○ Suitable for deployment on modern platforms
+○ Minimize divergence between development and production
+○ Scale up easily
+
+创业公司：software as a service；
+
+1 Codebase
+○ One codebase tracked in revision control, many deploys
+只有一个codebase， git等；建立branch；
+● 2 Dependencies
+○ Explicitly declare and isolate dependencies
+maven做dependency management；每一个module 都是self-contained
+● 3 Config
+○ Store config in the environment
+● 4 Backing services
+○ Treat backing services as attached resources
+系统内外部的services 都当成resources来用；
+In-memory cache能解决需求的话就不要用Redis
+● 5 Build, release, run
+○ Strictly separate build and run stages
+Build只是compile或者检查，run是deployment，根据不同环境进行配置；
+● 6 Processes
+○ Execute the app as one or more stateless processes
+老的Application中间是stateful，会存一些user session的信息；这样的问题是维护user的状态
+但是不能scale；
+● 7 Port binding
+○ Export services via port binding
+不同的service 运行在不同的port上，这样就省去了url的麻烦；
+● 8 Concurrency
+○ Scale out via the process model
+与Java 的concurrency不一样，java是线程级别上的concurrency；
+Tomcat在不同的端口都可以启动；前面放一个load balancer，就能在不同的instance之间scale；
+● 9 Disposability
+○ Maximize robustness with fast startup and graceful shutdown
+启动和关闭不会遗留信息，快速启动，快速关闭；资源回收掉；
+● 10 Dev/Prod parity
+○ Keep development, staging, and production as similar as possible
+参数设置不一样，developer debug就会很麻烦；
+Staging 是relatively 稳定的environment；staging没问题之后才会push到production
+所有developer都可以在上面deploy；
+● 11 Logs
+○ Treat logs as event streams
+不写log； Logs back遵从log的format；
+如何写log，为什么写log
+帮助我们debug的一些有用的信息output，希望通过log进行持久化，输出；
+Java只能push到console上；如果挂掉了，就都消失了；所以写log是很重要的；
+写log：logging-level： info，debug，warning，error；
+针对不同的事件有不同的level；记录一下程序运行时候的information信息；
+log 写在本地的磁盘上；log很多的话I/O资源就会很多了，所以要有异步的log 的处理；
+把log通过message发送到RabbitMQ上，转发到log message上面，进行异步分析然后再进行持久化；
+● 12 Admin processes
+○ Run admin/management tasks as one-off processes
+
+写一个application的时候这12个factor不是每一条都要满足；
+
+这种方法适用于所有语言；
+What does 12 factor mean to Java developers?
+
+Spring Boot已经把12个factor里面的东西都wrap up了；
+Microservices:
+Microservice Architecture has sprung up over the last few years to describe a particular way of designing software applications as suites of independently deployable services. While there is no precise definition of this architectural style 
+there are certain common characteristics around organization around business capability, automated deployment , intelligence in the endpoints, and decentralized control of language and data; 
+
+微服务
+Is XML RPC Microservices?
+	Yes and No；
+Technology coupling
+Local class are not like remote calls
+不是一个理想的Microservice，有一点Microservice，对系统进行了解耦；
+
+Is Service Oriented Architecture Microservices?
+Yes and No
+
+SOA 太重了；实现起来比较复杂，实现不了micro，但是service方式类似；比较接近Microservices
+Message transportation 用SOAP； 很麻烦；没法用简单的方式传输数据的机制；
+
+Is RESTful API Microservices?
+Yes and No；
+RESTful API是实现Microservice的一种方式；不是一个level的东西；两个不一样的概念；
+只能说只要有RESTful API就是Microservices；有的Microservice是通过RESTful API实现的；
+
+Is gRPC Microservices?
+Yes； 
+What is gRPC? Why gRPC?
+	Open source HTTP/2 RPC Framework
+	Motivation
+
+Why gRPC?
+○ Multi-language, multi-platform framework
+○ Transport over HTTP/2 + TLS
+○ C/C++ implementation goals
+
+Microservices 的好处:
+○ Small 
+○ Single, focused purpose
+○ Independently deployable；和别的application没什么关系，单独部署
+○ Independently scalable, resilient
+○ Independent technology stack：可以Java python都可以
+○ Simple/Hard
+○ Modularity Based on Component Services
+○ Change Cycles Decoupled/Enable Frequent Deploys
+○ Efficient Scaling
+○ Individual Components Less Intimidating to New Developers
+○ Enables Scaling of Development
+○ Eliminates Long-Term Commitment to Technical Stack
+
+Microservice的缺点：
+Cons
+○ Distributed architecture is not easy
+○ Refactoring across service boundaries
+○ Interface changes are challenging
+○ Operational challenges
+
+如果一个service down掉了该怎么办；
+
+How to design Microservices? (Netflix Principles)
+Netflix 极力推荐Microservice：微服务架构的经验
+○ Modeled around business domain
+○ Decentralize all things
+○ Deploy Independently 单独地做部署
+○ Design for Failure suppose 每个mircroservice 在任何时候都可能fail；
+○ Highly Observable 每个service 进来之后都能被其他service发现
+○ Hide Implementation 每个service对外进行评比
+○ Culture of Automation 自动化处理
+
+Netflix是一个technology company；
+Why is implementing Microservices so hard?
+1.organization 原因；
+扁平化的organization； application由12个人完成产品从开发， 到测试到上线；
+payment service team
+Microservice是对organization的一个反应；
+2.
+Common problems:
+○ How do we wire our services together?
+■ Components in a monolithic system communicate through a simple
+method call, but components in a microservice system likely
+communicate over the network through REST, web services or some
+RPC-like mechanism
+
+Common problems:分布式系统或者是分布式架构的问题
+○ How to manage configurations?
+○ How to discover services?
+○ How to avoid avalanche?
+○ Leadership election problems
+○ How to do distributed tracing and logging?
+○ How to do event streaming?
+○ How to do global authentication?
+
+
+Conway's Law
+Any organization that designs a system will inevitably produce a design whose 
+structure is a copy of the organizaton's communication structure.
+
+
+Cloud Native > Microservices
+Cloud Native Java application
+开发程序做很少的改动，就能跑在云端；部署在云端；Microservice不一定是cloud native；
+Cloud
+Microservices are only a small part of a large picture
+用docker进行部署
+
+Spring Cloud
+Here comes Spring Cloud
+What is Spring Cloud?
+Why is Spring Cloud?
+
+Spring framework就像是原材料，Spring Boot就像是做成的一个蛋糕；Spring cloud 就是做成的很多蛋糕；
+
+
+Spring Cloud provides a way to turn Spring Boot microservices into distributed applications
+
+Spring Cloud 
+Do you still remember common problems of distributed systems?
+● Spring Cloud comes to rescue developers
+○ Reduce boilerplate code
+○ Quickly setup services and applications that implement those patterns
+○ Same code, work anywhere
+
+
+Spring Cloud
+● Distributed/versioned configuration
+● Service registration and discovery
+● Routing
+● Service-to-service calls
+● Load balancing
+● Circuit Breakers
+● Global locks
+● Leadership election and cluster state
+● Distributed messaging
+
+Spring Cloud:
+● Spring Cloud Config
+● Spring Cloud Netflix
+● Spring Cloud Sleuth
+
+Spring Cloud Netflix
+● Eureka
+● Hystrix保险丝 Defend your app
+● Ribbon
+● Zuul转发的作用；proxy routing
+
+Build Pipeline；
+
+Spring Boot Actuator：Eable Spring Boot Actuator 加入starter pom进来
+detect 到pom然后enable；
+Operations in production
+Spring Boot Actuator Endpoints
+/health： 看applicaiton是否在运行；Spring dependency的health；看各种application是否healthy； 哪些部分出错了；
+/metrics：应用的统计信息
+/env：JDk，JVM等env信息
+/mappings：看到app map到了哪些url
+/info
+
+
+Continuous Integration（CI）
+持续集成
+
+独立的environment来运行code；
+
+Continuous Delivery 持续交付
+从code commit之后能够很快地部署到production上；
+
+From Dev to Ops in Production
+● Spring Boot Actuator
+	○ Monitor
+	○ Manage
+● Add spring-boot-starter-actuator
+
+Dev: Development
+Ops: Operations
+
+From Dev to Ops in Production
+● Spring Boot Actuator Endpoints
+● /health
+● /metrics
+● /env
+● /mappings
+● /info
+
+系统架构师对不同语言，不同技术有深刻的认识；和具体的语言没什么关系；
+One more thing：
+
+Think about implementing Spring Boot&Cloud in other languages?
+Are you happy with or worried about Java & Spring development?
+Did you expect Spring can go this far at the beginning of this course?
+What are the problems with Spring Boot?
+1.如果没有人带的话，setup；
+2.Spring Boot用了很多convention，一旦配置稍有不同；就会有问题；
+What are the problems with Spring Cloud?
+real-time streaming RabbitMQ就比较力不从心；
+Spring Cloud 对这些技术集成的时候就是比较慢了；
+What are the problems with Java?
+缺少动态性；
+What skill set do you need for a job interview?
+
+Wish.com 每天做production部署；
+Bloomberg规模很大，每天4000次production deployment；
+自动化支持
+Java Spring面试题精讲：
+如何对Spring Uber项目进行优化？
+Performance
+	■ Redis caching  Key-value store分布式的大的Hashmap
+	Redis 做cache 速度非常快，有cluster的功能
+	支持persistence；把vin作为key，车简单的info做成value；提高系统速度；
+	■ Geohash based load balancing
+	Encoding lat/lon points as strings. The original intention was to have a URLfriendly
+	way of specifying geolocations, but geohashes have turned out to be
+	a useful way of indexing geo-points and geo-shapes in databases
+	■ Kafka
+	■ Cassandra as data store
+Scalability
+
+Availability
+
+Monitoring
+
+Security
+
+Geohash：把经纬度作为hash 的string； 地理信息系统可以用Geohash做index；
+Encoding lat/lon points as strings. The original intention was to have a URLfriendly
+way of specifying geolocations, but geohashes have turned out to be
+a useful way of indexing geo-points and geo-shapes in databases
+
+■ Divide the world into a grid of 32 cells—4 rows and 8 columns—each represented by a
+letter or number. The g cell covers half of Greenland, all of Iceland, and most of Great
+Britian. Each cell can be further divided into another 32 cells, which can be divided into
+another 32 cells, and so on. The gc cell covers Ireland and England, gcp covers most of
+London and part of Southern England, and gcpuuz94k is the entrance to Buckingham
+Palace, accurate to about 5 meters. 
+■ The longer the geohash string, the more accurate it is. If two geohashes share a prefix—
+and gcpuuz—then it implies that they are near each other. The longer the shared prefix,
+the closer they are
+
+Kafka 的delivery 是at least once delivery；
+性能非常好，分布式的messaging；
+Kafka：
+A distributed streaming platform
+
+Message distribution 非常快；
+互联网公司活着的fintech 用kafka；目前不是一个很成熟的项目；需要踩很多坑；
+
+Cassandra：
+	■ Decentralized
+		● Every node in the cluster has the same role. There is no single point of failure.
+		Data is distributed across the cluster (so each node contains different data), but
+		there is no master as every node can service any request.
+	■ Supports replication and multi data center replication
+		● Replication strategies are configurable. Cassandra is designed as a distributed
+		system, for deployment of large numbers of nodes across multiple data centers.
+		Key features of Cassandra’s distributed architecture are specifically tailored for
+		multiple-data center deployment, for redundancy, for failover and disaster
+		recovery.
+	■ Scalability
+		● Read and write throughput both increase linearly as new machines are added, with
+		no downtime or interruption to applications.
+	■ Fault-tolerant
+		● Data is automatically replicated to multiple nodes for fault-tolerance. Replication across multiple
+		data centers is supported. Failed nodes can be replaced with no downtime.
+	■ Tunable consistency
+		● Writes and reads offer a tunable level of consistency, all the way from "writes never fail" to "block
+		for all replicas to be readable", with the quorum level in the middle
+	■ MapReduce supported
+Cassandra不是transactional的database；
+all time Consistency 的情况下就不太适用；
+
+Scalability
+■ Nginx 部署load balancing；
+■ Eureka 部署到不同的data center 上面； 通过不同的Eureka center 进行scale
+■ Cassandra 对等的node 的特性进行scale；
+有一定经验才能想到的：
+Availability 可用性
+■ Hystrix
+■ Availability Zones
+■ Replicated Persistence
+
+○ Monitoring
+■ ELK
+■ Sensu
+
+Security
+■ Spring Security
+■ OAuth 2
+■ JWT
+
+How to pick and choose technologies?
+如何做技术选型?
+选框架或者选技术；
+框架本身的成熟度；社区的支持与否；生态系统的完备性；易用性，后期维护；production support
+Spring 和Spring boot长期发展比较成熟；我们要踩得坑比较少；框架很好；
+Java语言和生态系统足够成熟；Spring 和Spring Boot积极听取社区的反馈；
+
+Java EE进步缓慢很多；
+How to prepare your interview?
+算法是一个基本功；通过高频题的练习，短时间突破；思考问题和解决问题的成熟度；
+准备算法；
+Communication skills；应对HR Behavior questions； 看是否能够fit 这个团队
+
+How to grow your career?
+What qualities are required for a decent job?
+problems Solving skill & communication skill 解决问题的方法跟别人communicate；
+Team player 和其他小伙伴能够愉快地相处和工作；
+
+RESTful API 是实现Microservice的一个手段；
+
+cloud native Java Application
+弹性化的运维部署；
+
+Service Registration & Discovery
+○ Eureka
+● Circuit Breaker
+○ Hystrix
+
+Spring Boot Actuator：
+Operations in Production
+
+@Enablezuulproxy
+
+Service registry/Service Discovery
+Eureka
+
+Spring Boot 是所有的Spring Cloud 的基础；省去了很多configuration的工作；提供了很多externalized的configuration；
+可以用同样的code，不同的environment；用不同的configuration就可以部署code；
+
+Eureka要部署至少三个instance；
+面试题精讲：
+面试题1：
+Browser - Application：
+Browser发送一个请求，然后5分钟之后Application返回一个HTTP 500的错误，中间Application出现了什么问题？
+HTTP 500 internal server error：
+Application这边出现了错误
+什么样的原因导致了HTTP 500？ 
+Application和别的web service打交道或者database 打交道；可能是timeout exception；也有可能是别的web service打交道时候timeout；
+程序执行错误的话就会立刻抛出HTTP 500；
+但是5分钟之后的原因可能事和别的web service打交道；或者是database 打交道；
+和web service 响应太慢，timeout； application访问web service 会timeout；
+还有其他可能原因是Stack Overflow，memory leak
+
+什么样的东西是在堆上，什么东西实在栈上；
+stack recursive call 的variable 都会在栈上申请空间；
+
+
+Why did you use Spring?
+从根本上是一个bean container， 能管理bean和bean 的生存周期；Spring core/Spring MVC
+What are the benefits of using Spring Framework?
+Spring core的部分；singleton scope ， prototype scope； Inject different beans into other beans；
+不需要worry 怎么create 和manage beans； Beans 的生命周期
+What is DI/IoC?
+DI: Dependency Injection
+为什么要用DI？
+Inject Dependency to other
+IoC: Inversion of Control
+控制反转；
+这些dependency are managed by the container;
+
+
+What is Spring Boot?
+Using the convention of configuration approach; accelerate the developer of different framework
+
+Why did you use Spring Boot?
+
+Can you config Spring Without Spring Boot？
+Yes; Spring Configuration 比较复杂， 用Spring Boot比较简单；
+
+传统的Spring有三种方法config：
+1.XML configuration：
+缺点是too verbose； 维护起来太复杂；
+2.Java Configuration：
+帮忙及时做静态检查，提早发现dependency的问题；
+缺点是不知道哪个class 可以用去enable configuration； 需要查文档才能知道用哪个class；
+
+3.Annotation base
+标记不同的Java class； 来生成Java bean
+
+
+What is Transactional annotation?
+是一个使用层面的；
+○ JPA on itself does not provide any type of declarative transaction
+management. When using JPA outside of a dependency injection
+container, transactions need to be handled programatically by the
+developer
+○ A developer needs to get transaction from entityManager, declare when
+transaction starts, when to commit the transaction, if any exception
+occurs, whether it needs to rollback a transaction
+
+缺点：
+○ it's repetitive and error prone
+○ any error can have a very high impact
+○ errors are hard to debug and reproduce
+○ this decreases the readability of the code base
+○ What if this method calls another transactional method?
+
+○ Transactional annotation is a Spring way to provide declarative
+transaction management
+○ By using @Transactional annotation, it is much more convenient and
+readable, and is currently the recommended way to handle transactions
+in Spring.
+○ By using @Transactional, many important aspects such as transaction
+propagation are handled automatically. In this case if another
+transactional method is called by businessLogic(), that method will have
+the option of joining the ongoing transaction.
+
+
+
+How does Spring handle Transaction?
+○ Persistence Context
+○ Database Transaction
+○ The transactional annotation itself defines the scope of a single database
+transaction. The database transaction happens inside the scope of a
+persistence context.
+
+○ The persistence context is in JPA the EntityManager, implemented
+internally using an Hibernate Session (when using Hibernate as the
+persistence provider).
+○ The persistence context is just a synchronizer object that tracks the state
+of a limited set of Java objects and makes sure that changes on those
+objects are eventually persisted back into the database.
+
+○ One Entity Manager can be used across several database transactions
+○ A common practice is to use the JPA Entity Manager is with the "Entity
+Manager per application transaction" pattern. This is the most common
+way to inject an entity manager
+
+○ The persistence context proxy that implements EntityManager is not the
+only component needed for making declarative transaction management
+work
+○ The EntityManager Proxy
+○ The Transactional Aspect
+○ The Transaction Manager
+
+○ The EntityManager Proxy
+○ The Transactional Aspect
+■ Before
+■ After
+○ The Transaction Manager
+■ should a new Entity Manager be created?
+■ should a new database transaction be started?
+
+● In case it needs to create a new transaction
+○ create a new entity manager
+○ bind the entity manager to the current thread
+○ grab a connection from the DB connection pool
+○ bind the connection to the current thread
+○ The entity manager and the connection are both bound to the current
+thread using ThreadLocal variables.
+
+● Entity Manager Proxy
+○ When the business method calls for entityManager.persist(), this call is
+not invoking the entity manager directly.
+○ Instead the business method calls the proxy, which retrieves the current
+entity manager from the thread, where the Transaction Manager put it.
+
+面试题5： 
+Checked Exception VS Unchecked Exception
+● Checked
+○ Exceptions are checked at compile time
+○ E.g. IOException
+● Unchecked
+○ Exceptions are not checked at compile time
+○ Error
+○ RuntimeException
+■ NPE
+■ ClassCastException
+■ Arithmetic Exception
+
+What is the best practice for handling exceptions?
