@@ -1,0 +1,328 @@
+
+DP 与 airbnb 专题：
+
+DP 核心思想：Dead pool
+1. Deduction Formula
+a[i][j] represents substring of word1 of length i and substring of word2 of length j
+i.e. word1.substring(0, i) and word2.substring(0, j)
+a[i][j] 表示什么东西； word 的话i表示从0-i-1； 从第0个到i-1个；
+
+
+2. Initialization
+3. Space Improvement(Bonus)
+
+
+LC72: Edit Distance: 
+
+Given two words word1 and word2, find the minimum number of operations required to convert word1 to word2.
+
+You have the following 3 operations permitted on a word:
+
+Insert a character
+Delete a character
+Replace a character
+
+Input: word1 = "horse", word2 = "ros"
+Output: 3
+Explanation: 
+horse -> rorse (replace 'h' with 'r')
+rorse -> rose (remove 'r')
+rose -> ros (remove 'e')
+
+不是所有的DP题都可以优化的；
+DP可以进行空间优化；
+
+KEditDistance: 
+Given a set of strings which just has lower case letters and a target string
+Output all the strings for each the edit distance with the target no greater than k
+
+You have the following 3 operations permitted on a word:
+Insert a character
+Delete a character
+Replace a character
+
+Naive Solution : 
+For each word in the list, calculate the edit distance with the target word.
+
+If it is equal or less than k, output to the result list. 
+
+If we assume that the average length of the words is m, and the total number of words in the list is n.
+So target word is of length m, and one single edit distance operation is m^2.
+The total time complexity is O(n * m^2). 
+
+Optimal Solution： 
+The problem with the previous solution is if the given list of the words is like ab, abc, abcd, each time we need to repeatedly calculate the edit distance with the target word.
+If we can combine the prefix of all words together, we can save lots of time. 
+
+
+StringBuilder 可以看做是可以自动扩容的char Array；
+
+
+Airbnb：
+
+Cross Functional  Behavior Question
+为什么来这家公司？ 
+
+通关技巧:
+
+1.他家很有前景；
+2.你很喜欢他家的服务；
+3.他家的服务能让人更好的感受 local 的文化；（hotel感受不到local 文化，local host 带你出去玩）
+4.艺术气质；
+
+Airbnb的题都很难，超级难；网上30题；
+
+有限的情况，有限的时间；面试题要有区分度；不能让所有人都做出来；
+
+Cross Functional (Behavior Question)
+
+1.What bring you to Airbnb?
+2.What can you teach your co-workers after you get in?
+3.Describe a person whom you admire most
+4.Where have you been to?
+5.What will you do if you win a lottery such as Powerball?
+6.What is the biggest fear in your life?
+7.How do describe Airbnb to a people back to 2003?
+8.If you have a book that writes about your whole life, will you read it? why?
+9.If you have a time machine, and you can either go back or go forth, will you choose to go back or to go forth?
+10.Among all the features of Airbnb, what do you want to improve?
+
+
+Problems will come and go. But culture is forever.
+
+Why Airbnb:
+Wiki, Linkedin, Crunchbase and etc...
+
+Elements of high performing teams:
+Results
+Accountability
+Commitment
+Conflict
+Trust
+
+Technical Stack
+
+找一个人不在于很牛逼，很在于fit； 非常合适；
+
+Culture：
+都是不同角度问对Airbnb文化的理解，还有自己character是怎么和Airbnb文化confirm的；
+
+Technical Stack（It fits me)
+
+两方面： Culture 与 Technical Stack；
+
+
+Ruby： 快速的prototype；建立网站特别快；
+
+Why do you want to leave your current job?
+一个conversation 是two ways的；
+主动权
+不是你问我答
+
+大忌： 不要说自己之前公司的坏话；
+
+Drive 这个conversation； 
+
+“If it isn’t obvious that we should hire someone, then it is obvious we shouldn’t.” 
+
+Questions for Negatives： 
+不要恋战，此地不宜久留
+转移话题，转为有利话题，比如
+the greatness of your company attracts me for this great opportunity
+反守为攻，改被动为主动
+Drive the conversation
+
+
+公司职场的待人接物和生存法则：
+
+Morning mood - after coffee
+早上起床气； 上司喝咖啡之前；一大早让他settle down； 
+
+No meeting at lunch time
+要提前schedule meeting；提前预订假期；
+
+No personal space intrusion
+别人的时间和空间； 
+
+
+Do research before asking others questions
+问问题之前要先自己做research；
+
+Respect others’ time
+
+Lunch time is golden time for bonding
+午饭时间不谈工作，可以谈非工作的东西；花午饭时间聊生活其他事情；
+
+
+永远对事不对人
+和别人互相吵的时候，一定要说事情的做法不对，不要说人的问题；
+
+新入职 – ramp up time 尽可能多问： 多问； Assume 你什么都不知道的；
+刚入职的头一个月要拼命加班搞懂一些事情；问之前一定要先做一些research；
+现在的工作进度，工作遇到的困难；等等；以至于生活中遇到的事儿；
+
+
+和经理一对一该说什么
+
+别在有情绪的时候说话
+
+开会要不要积极发言？不懂要不要装懂？
+
+升职秘诀 – 抱对大腿，牛人走完
+
+问问题的窍门 – 骚扰多人，不要只拔一只羊的毛
+
+BQ转专业问题
+
+Why do you want to change your major?
+
+BQ转组问题
+
+Why do you want to change your team?
+
+
+Segment Tree
+The structure of Segment Tree is a binary tree which each node has two attributes start and end denote an segment / interval
+
+
+The left child of node A
+	start = A.left
+	end = (A.left + A.right) / 2
+The right child of node A
+	start = (A.left + A.right) / 2 + 1
+	end = A.right
+If start equals to end, there will be no children for this node
+
+
+class SegmentTreeNode {
+    public int start, end;
+    public SegmentTreeNode left, right;
+
+    public SegmentTreeNode(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+}
+
+class SegmentTreeNode {
+    public int start, end, count;
+    public SegmentTreeNode left, right;
+
+    public SegmentTreeNode(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+}
+
+ public SegmentTreeNode build(int start, int end) {
+        if (start > end) {
+            return null;
+        }
+        SegmentTreeNode node = new SegmentTreeNode(start, end);
+        if (start == end) {
+            return node;
+        }
+        int m = start + ((end - start) >>> 1);
+        node.left = build(start, m);
+        node.right = build(m + 1, end);
+        return node;
+    }
+
+
+Segment tree with every node value
+represent the corresponding interval max value in the array
+
+class SegmentTreeNode {
+    public int start, end, max;
+    public SegmentTreeNode left, right;
+
+    public SegmentTreeNode(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    public SegmentTreeNode(int start, int end, int max) {
+        this(start, end);
+        this.max = max;
+    }
+
+}
+
+
+public int query(SegmentTreeNode root, int start, int end) {  
+        if (root == null || root.end < start || root.start > end || start > end) {  
+            return Integer.MIN_VALUE;  
+        }  
+        if (start <= root.start && root.end <= end) {  
+            return root.max;  
+        }  
+        int mid = root.start + ((root.end - root.start) >>> 1);  
+        int leftMax = query(root.left, start, Math.min(mid, end));  
+        int rightMax = query(root.right, Math.max(mid, start), end);  
+        return Math.max(leftMax, rightMax);  
+    }
+
+pre-fix tree: The Trie Data Structure (Prefix Tree) 一定要掌握； 
+KMP 算法； 基本的String match 算法；
+
+刷题与面试技巧；
+
+logn 不够的话只能是O(1) ; bucket
+
+public void modify(SegmentTreeNode root, int index, int value) {
+        if (root == null || index < root.start || root.end < index) {
+            return;
+        }
+        
+        if (root.start == index && root.end == index) {
+            root.max = value;
+            return;
+        }
+        
+        int mid = root.start + ((root.end - root.start) >>> 1);
+        if (index <= mid) {
+            modify(root.left, index, value);
+        } else {
+            modify(root.right, index, value);
+        }
+        root.max = Math.max(root.left == null ? Integer.MIN_VALUE : root.left.max, 
+                            root.right == null ? Integer.MIN_VALUE : root.right.max);
+        return;
+    }
+
+Segment Tree 的优点是：
+在做update 的时候，只需要用到log(n) 的时间；所以如果数组调用特别频繁的话； 
+Segment Tree是非常有用的；
+
+
+Presum
+prefix sum array: 是一个数组；
+
+presum[i+1] - presume[j] : sum of A[j...i]
+但是如果需要update 的话； Presum array 的用处就不大了； 
+
+
+Segment tree 用的领域更广一些；
+
+Binary index Tree（Fenwick tree）
+
+
+Time:
+buildTreeNode: O(n)
+updateTree: O(log(n))
+treeSum: O(log(n))
+
+Space:
+buildTreeNode: O(n)
+updateTree: O(1)
+treeSum: O(1)
+
+谷歌经典难题
+Given bulb 1, 2, 3, … n. Implement two methods:
+-void toggle(int rangeBegIndex, int rangeEndIndex)
+-boolean isOn(int ithBulb)
+
+
+-Segment Tree 的思想
+-Interval Tree
