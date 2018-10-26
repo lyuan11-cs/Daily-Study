@@ -1,0 +1,159 @@
+1.install kits for atom:
+apm install atom-typescript
+
+sudo npm uninstall -g angular-cli
+
+sudo npm install -g @angular/cli
+
+添加一道题： 
+Access to oj-client/src/app/components/ 
+ng g c new-problem
+
+Data binding
+Event binding
+Property binding
+
+Navbar code from bootstrap ->component ->navbar
+
+用express 搭配node.js
+
+npm install --save express
+
+
+node server.js  
+
+to compile and run
+
+nodemon: 
+npm install -g nodemon
+
+compile using nodemon server.js
+
+后端的router
+
+body-parser: 
+
+npm install --save body-parser
+
+npm install --save mongoose
+
+
+mlab.com : online mongoDB
+amazon aws-> sandbox->free version
+
+mongodb://<dbuser>:<dbpassword>@ds129393.mlab.com:29393/lei
+
+path 是nodejs自带的一个工具包；
+
+hasNext
+boolean hasNext()
+Returns true if the iteration has more elements. ( In other words, return true if next() would return an element rather than throwing an exception)
+
+Returns:
+true if the iteration has more elements
+
+next
+E next()
+Returns the next element in the iteration
+
+Returns:
+	the next element in the iteration
+
+/Traverse a list , hashtable, vector,etc . what ever that implements;
+The iterator pattern
+
+public void traverse(Iterator iter){
+	while(iter.hasNext())
+	{
+		System.out.println(iter.next());
+	}
+}
+
+NoSuchElementException
+Runtime Exception vs Checked Exception: 
+Checked Exception is required to be handled by compile time while Unchecked Exception doesn’t
+Checked Exception is direct sub-Class of Exception while Unchecked Exception are of RuntimeException
+Checked Exception represent scenario with higher failure rate while UnChecked Exception are mostly programming mistakes
+Checked Exception requires mandatory try catch or try finally block but unchecked Exception don’t
+
+Sleep
+public static void sleep(long millis)
+	throws InterruptedException
+
+Causes
+
+
+Iterator Pattern: 
+1.The Iterator Pattern provides a way to access the elements of an aggregate object sequentially without exposing its underlaying representation
+2.No matter what data structure (arrays, lists, hashtables,etc.) you are using, you can always traverse it in the same way if you implement this pattern. It gives you a uniform way of accessing the elements of your data structures (aggregates), but you don’t have to know what kind of data structure
+
+Lazy Loading:
+File I/O
+DAO
+Big Data
+
+
+Iterator 最简单的设计模式；
+OOD 接口的定义应该知道；
+
+Mock OOD
+HashMap:
+getOrDefault（）;
+clear();
+clone();
+random: If two instances of Random are created with the same seed; 
+
+用户登录和用户管理系统： 
+
+Auth0
+
+Cassandra: 分布式数据库系统；
+
+涵盖了很多计算机世界的经典问题；
+
+Redis集群模式和cassandra模式差不多； 
+
+uber的路由服务； 地理位置信息检索；
+
+openstack 是一套开源的云计算的架构；开源的AWS；
+
+hadoop是一套开源的Google系统；
+
+Centralized Database
+
+Cassandra DB: 
+
+数据库增加了持久性、一致性、SQL；
+数据库给大家提供了一个更好沟通的手段；
+
+集中式的数据库/单机数据库
+
+Distributed Database：因为单机处理能力不够
+Partitioning: 从单机存到分配到多个机器存；
+
+
+Centralized database to distributed database；
+单机存的能力不够；
+
+分布式数据库:
+数据切成多分，存储在不同的数据库上；
+
+分布式系统：一组机器在一起，共同协作，让用户以为是一台机器的错觉；
+
+
+Range partitioning
+db1:0-9999; db2:10000-19999; db3: 20000-29999
+
+List partitioning
+
+
+Hash partitioning
+分布式系统： 没有数据冗余，只有数据分割；
+例子：ATM机
+
+数据分割方法：
+1.Range Partitioning; 问题：数据分配不均；不能很好地预估数据的range； 
+2.List Partitioning;
+3.Hash partitioning;
+
+
