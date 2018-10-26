@@ -1,0 +1,115 @@
+auto complete:
+"dog"
+"do"
+"door"
+
+//d -> dad, dead, dog,do,door
+//do -> dog, do, door
+			root 
+		   /    \
+		  d (dog,door,do)     c
+		 /        
+		door,dog 
+
+
+Dictionary => Set <String>
+
+List <String>
+
+class autoComplete{
+	Set<String> set;
+	Map<String,List<String>> map = new HashMap<>();
+
+	autoComplete(Set<String> dict){
+		for(String d : dict){
+			add(root,d);
+		}
+	}
+	List<String> search(String prefix){
+		Trie run = root;
+		for(char ch : prefix.toCharArray()){
+			if(!run.children.containsKey(ch)){
+				return new ArrayList<>();
+			}
+			run = run.children.get(ch);
+		}
+
+		if(run == null){
+			return new ArrayList<>();
+		}
+		return new ArrayList<>(run.strs);
+	}
+	void add(Trie root,String s){
+		Trie run = root;
+		for(char ch :s.toCharArray()){
+			if(!run.children.containsKey(ch)){
+				run.children.put(ch,new Trie());
+			}
+			run = run.children.get(ch);
+			run.strs.add(s);
+		}
+		run.end = true;
+	}
+
+	class Trie{
+		Map<Character,Trie> children = new HashMap<>();
+		boolean end = false;
+		Trie(){
+
+		}
+	}
+	list<String> search(String prefix){
+		if(!map.containsKey(prefix)){
+			List<String> res = new ArrayList<>();
+			for(String s:set){
+				if(S.startsWith(prefix)){
+					res.add(s);
+				}
+			}
+			map.put(prefix,res);
+			return res;
+		}else{
+
+		}
+	}
+}
+
+
+实现一个data structure；
+实现哪些method signature；实现哪些方法；
+
+define empty method； 
+
+Input和output； 
+
+AutoComplete
+
+walk through test cases 时候不要空口去讲；
+把变量全部都讲出来；
+
+debug的时候加一个断点，知道每一步都做了什么；
+用语言描述一个trie；trie的walk through；
+
+Tries:
+注意如何在电面时候画Trie和表达Trie；
+
+什么是Tries:
+Variable Length keys
+The decision on what path to follow is taken based on portion of the key
+Static environment, fast retrieval but large space overhead;
+Application:
+	Dictionaries
+	Text Searching
+Trade space for runtime 本质上是空间换时间；
+Costly operation to build Trie: assume updating or rebuilding is rare
+Assume 重建和更新是很少做得；
+
+
+一个比较general 的tree；里面可以有更多的child
+Trie建一遍
+
+@表示word termination symbol
+1.@boolean
+2.@pointer to word
+3.every node contains pointers to passing words
+
