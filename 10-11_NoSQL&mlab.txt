@@ -1,0 +1,519 @@
+Collaborative Online Judge System
+
+Outline:
+Generate 3rd component new-problem
+Generate 4th component navbar
+Create a RESTful API server with NodeJS and Express
+Integrate MongoDB
+Connect oj-client and oj-server
+
+生成了第三个component，用来添加新的问题，然后生产了navbar；切换到server端，建立了一个RESTful server 用NodeJS 和Express；
+
+集成了MongoDb数据库，通过mlab在线的数据库，连接到server端；所有数据的读写都连接到数据库上
+
+重写了client side； 把所有的数据获取与存储改写为异步的形式；用了Promise和Observable；
+
+
+Observable 属于比较高级的topic；
+
+生成new-problem;
+html开始创建component；
+
+先写html再写component；
+
+HTML的部分：
+
+<div>
+  <form #formRef="ngForm">  //创建一个表单；不加#formRef会报错；
+    <div class = "form-group">  //三个部分 form-group是bootstrap的一个部分，作用是把范围内的整合为一个群组；与其他群组分隔开；样式好一些
+      <label for="problemName">Problem Name</label>  //label 的for 对应input里面的id；
+      <input type="text" class="form-control" id = "problemName"  //一般input会搭配一个label， id是提交HTML表单的时候 这一项的名字叫id   name是提交angular表单所需要的，angular表单获取属性所需要的
+      name="problemName" required placeholder="Enter Problem Name" [(ngModel)]="newProblem.name">  ngModel newProblem.name 变化的时候，表单的值也会发生相应的变化；[{}]数据的双向绑定
+    </div>
+
+    <div class = "form-group">
+      <label for="problemName">Problem Description</label>
+      <textarea type="text" row="3" class="form-control" id = "problemDesc"//三行宽；
+      name="problemDesc" required placeholder="Enter Problem Description" [(ngModel)]="newProblem.desc"></textarea>
+    </div>
+    <div class = "form-group">
+      <label for="difficulty">Difficulty</label>
+      <select  class="form-control" id = "difficulty"
+      name="difficulty" [(ngModel)]="newProblem.difficulty">
+      <option *ngFor="let difficulty of difficulties" [value] ="difficulty">  //下拉菜单
+        {{difficulty}}
+      </option>
+    </select>
+    </div>
+    <div class = "row">
+      <div class = "col-md-12">
+        <button type = "submit" class= "btn btn-primary pull-right" (click)="addProblem()" > Add Problem</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+//new-problem controller
+import {Component, Inject, OnInit} from '@angular/core';
+import { Problem } from "../../models/problem.model";
+
+
+
+const DEFAULT_PROBLEM: Problem = Object.freeze({   //ES6 的语法； .freeze冻结，不能够改变任何的property；常量， 初始值
+  id:0,
+  name:"",
+  desc:"",
+  difficulty:"Easy"
+});
+
+@Component({
+  selector: 'app-new-problem',
+  templateUrl: './new-problem.component.html',
+  styleUrls: ['./new-problem.component.css']
+})
+export class NewProblemComponent implements OnInit {
+
+  public difficulties = ["Easy","Medium","Hard","Super"];
+
+  newProblem: Problem = Object.assign({},DEFAULT_PROBLEM); //初始值；
+
+  constructor(@Inject("data") private data) { }
+
+  ngOnInit() {
+  }
+
+  addProblem():void{    //newproblem 的功能通过addproblem 实现的；
+    this.data.addProblem(this.newProblem)
+      .catch(error => console.log(error._body));
+    this.newProblem = Object.assign({},DEFAULT_PROBLEM);
+  }
+
+}
+
+Component navbar:
+Bootstrap navbar template使用bootstrap template；
+Feature: user can see a Bootstrap style navigation bar on top of all pages;
+Component:navbar
+
+打好基础： HTML，CSS，JavaScript的三个基础；很重要；
+Bootstrap的用法；在project会越用越熟
+Design Server： 
+
+Create a RESTful API server with NodeJS and Express(重点)
+
+Feature: user can GET and POST problems from server using RESTful API
+
+Steps:
+1.initialize oj-server and install Express
+2.Create server.js to handle the server-side routing
+3.Create rest.js to handle GET /api/v1/problems request
+4.Create problemService.js to read/write the problem data
+5.Handle GET /api/v1/problems/:id and POST /api/v1/problems requests
+6.Test with Postman
+
+在新建的folder npm init 生成package.json文件；
+
+三个request； 
+
+express是node.js的非常有用的library； 可以很快的搭起来nodeJS server；
+nodemon 可以观察server的实时变化；
+
+
+server端建立的所有文件都没有用angular， 而client端新建component全部用的angular；
+
+
+server.js in oj-server
+server起到router的作用
+
+server.js: 
+
+
+const express = require('express')
+const app = express()
+var restRouter = require("./routes/rest"); //handle 所有restAPI的请求； Create rest.js to handle GET /api/v1/problems 
+var indexRouter = require("./routes/index");//handle 所有根目录的请求；
+var mongoose = require("mongoose");
+var path = require("path");
+
+mongoose.connect("mongodb://lyuan11:86zhentan@ds129393.mlab.com:29393/lei")  //username and password for mlab.com
+
+app.use(express.static(path.join(__dirname,'../public')));
+app.use('/',indexRouter);
+app.use("/api/v1", restRouter);
+app.listen(3000, function(){
+    console.log('Example app listening on port 3000!')
+})
+
+
+rest.js
+
+var express = require('express');
+var router = express.Router();
+var problemService = require("../services/problemService");
+var bodyParser = require("body-parser");
+var jsonParser = bodyParser.json();
+
+
+
+router.get("/problems",function(req,res){
+    problemService.getProblems()    
+        .then(problems => res.json(problems));
+});
+
+router.get("/problems/:id",function(req,res){
+    var id = req.params.id;
+    problemService.getProblem(+id)
+        .then(problem => res.json(problem));
+});
+
+
+router.post("/problems", jsonParser,function(req,res){ //从浏览器传回的数据
+    problemService.addProblem(req.body)
+        .then(function (problem){
+            res.json(problem);
+        },function(error){
+            res.status(400).send("Problem name already exists!");
+        });
+});
+module.exports = router;
+
+mlab.com；
+
+mongoose library; 
+
+mongoose.Schema(); 
+
+problemService.js
+
+var ProblemModel = require("../models/problemModel");
+
+var getProblems = function(){
+    return new Promise((resolve,reject) => {  //异步请求一个数据；； 集成MongoDB； 
+        ProblemModel.find({},function(err,problems){ // find返回所有match的；
+            if(err){
+                reject(err);
+
+            }else{
+                resolve(problems);
+            }
+        });
+    });
+}
+
+var getProblem = function(id){
+    return new Promise((resolve,reject) => {
+        ProblemModel.findOne({id: id},function(err,problem){  
+            if(err){
+                reject(err);
+            }
+
+            else{
+                resolve(problem);
+            }
+        });
+    });
+}
+var addProblem = function(newProblem){   // 向MongoDB添加一个problem
+    return new Promise((resolve,reject) => {
+            ProblemModel.findOne({name : newProblem.name},function(err,problem){   //看是否存在；
+                if(problem)
+                    {
+                        reject("Problem name already exists");  
+                    }else{
+                        ProblemModel.count({}, function(err,num){   //只添加不删除；
+                           newProblem.id = num + 1;
+                           var mongoProblem = new ProblemModel(newProblem);
+                           mongoProblem.save();
+                           resolve(newProblem);
+                        });
+                    }
+                });
+            })
+}
+
+module.exports = {
+    getProblems: getProblems,
+    getProblem:getProblem,
+    addProblem:addProblem
+}
+
+
+Connect oj-client and oj-server
+
+1.Refactor client-side data service to async 
+	Promise: single Value
+	Observable: value stream
+2.Move/public folder outside /oj-client
+3.Send static web pages from server to browser
+	Note to forward all unhandled url request to client-side routing(not done);
+
+
+data services.ts
+import { Injectable } from '@angular/core';
+import {PROBLEMS} from '../mock-problems';
+import { Problem} from '../models/problem.model';
+import { Http, Response, Headers} from '@angular/http';
+import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { toPromise } from 'rxjs/operators';
+
+@Injectable()
+export class DataService {
+  private problemsSource = new BehaviorSubject<Problem[]>([]);
+
+  constructor(private http: Http) { }
+
+  getProblems(): Observable<Problem[]> {  //返回值是一个Observable，返回类型是Problem 数组类型；差别： Promise 的值只能变一次；resolve或者reject到一个值之后就不变了； Observable 相反，是一系列的值，每当值变化之后subscriber的observer都能看见；可以连续变化的时间上的值；Subscribe 可以手动设定下一个值是什么东西；返回到一个地方可以拿到所有的问题；得到Observable的值需要用subscribe；每当值变化的时候，把值给我；
+
+    this.http.get('api/v1/problems')
+      .toPromise()
+      .then((res: Response) => {
+        this.problemsSource.next(res.json());
+      })
+      .catch(this.handleError);
+    return this.problemsSource.asObservable();
+  }
+
+  getProblem(id: number): Promise<Problem> { //异步操作；
+    return this.http.get(`api/v1/problems/${id}`) // http是angular 引入的自带的module； 传递相对路径 ${id} ES6 html template 写法； 1.可以支持多行 2.可以支持variable；
+      .toPromise()
+      .then((res: Response) => res.json())
+      .catch(this.handleError);//返回的是一个promise；确定自己得到的一定是一个promise；
+  }
+  addProblem(problem: Problem): Promise<Problem> {//向server 端push 请求； 返回的是一个promise；
+    const headers = new HttpHeaders({'content-type': 'application/json' });
+    // @ts-ignore
+    return this.http.post('/api/v1/problems', problem, headers)
+      .toPromise()
+      .then((res: Response) => {
+        this.getProblems();
+        return res.json();
+      })
+      .catch(this.handleError);
+  }
+
+  private handleError(error: any): Promise<any> {
+      console.error('An error occurred', error); // for demo purposes only
+      return Promise.reject(error.body || error);
+  }
+}
+
+
+Server端向browser发文件；
+indexRouter：
+
+
+Cassandra: 分布式数据库系统；
+
+涵盖了很多计算机世界的经典问题；
+
+Redis集群模式和cassandra模式差不多； 
+
+uber的路由服务； 地理位置信息检索；
+
+openstack 是一套开源的云计算的架构；开源的AWS；
+
+hadoop是一套开源的Google系统；
+
+Centralized Database
+
+Cassandra DB: 
+
+数据库增加了持久性、一致性、SQL；
+数据库给大家提供了一个更好沟通的手段；
+
+集中式的数据库/单机数据库
+
+
+Distributed Database：因为单机处理能力不够
+Partitioning: 从单机存到分配到多个机器存；
+
+
+Centralized database to distributed database；
+单机存的能力不够；
+
+分布式数据库:
+数据切成多分，存储在不同的数据库上；
+
+分布式系统：一组机器在一起，共同协作，让用户以为是一台机器的错觉；
+
+
+Range partitioning
+db1:0-9999; db2:10000-19999; db3: 20000-29999
+
+List partitioning
+
+
+Hash partitioning
+分布式系统： 没有数据冗余，只有数据分割；
+例子：ATM机
+
+数据分割方法：
+1.Range Partitioning; 问题：数据分配不均；不能很好地预估数据的range； 热度问题：越新的数据越热；读的工作不平衡；
+2.List Partitioning;
+3.Hash partitioning;
+
+Hash partitioning: 
+每一个数据有unique id； 然后做hash function； 得到hash 值； 
+
+Consistent Hashing： 
+
+Hash Partitioning: 问题： 如果加一个数据库怎么办？
+解决方法： 可以换hash function； 
+
+Rehash； 重新计算所有数据；
+
+数据迁移量最低的方法：
+Consistent Hashing；形成一个环
+
+
+加入一个server，删除一个server；一个节点加入与离开；离开就可以直接交给后继节点；
+
+每个数据库选一个数站在环上；
+
+Hash之后的值；数据迁移；
+
+Gossip Protocol： 分布式系统里面非常重要的沟通协议；
+
+架构： 主从模式；
+Matser-slave；
+几乎都和master 通信，然后master再和slave通信；
+
+对等网络： P2P网络；身份对等；
+Peer-to-Peer:
+How do nodes communicate? 
+Gossip Protocol：
+一传十，十传百；
+
+
+1.Fan number
+虽然我有10个好友，但是我只选择一定数量的好友；保证不会一下就overwhelm所有的好友；
+
+
+2.Time To Live
+每传播一次，收到的人就将它减1； 减到0 就不再继续传了；
+
+最有效率的传闲话：有共同朋友的问题； 形成环的问题；
+
+3.Membership
+	Members join or leave
+4.Failure Detection
+	Members crash
+Cassandra数据库里，节点通信些什么信息呢？ 有人加入，有人离开； 
+
+
+Data Model(Cassandra的data model基本已经被弃用了)
+Cassandra 有unique id ； 在名字上有hash function；根据名字进行hash 形成hash function；
+
+Cassandra支持三种hash function：
+MD5；（加密算法）不可逆
+murmur hash；（最推荐）： 比MD5快5倍，不是加密算法；
+Key有序的，hashvalue还是有序的function
+
+What's the problem?
+Load balance：
+1.负载不均衡；节点存储多少问题；
+2.无法保证每个机器的配置是不一样的；
+
+1.Virtual Nodes；
+2.Move Nodes；Cassandra的方法；移动就伴随着数据迁移； 迁移的标准是什么；
+
+Virtual Nodes：一台机器可以在环上扮演不同的节点；
+解决负载不均衡的情况：
+Virtual Nodes 可以保证机器分配负载的均匀；单机处理能力不一样：厉害的就处理多个负载
+Virtual Nodes: 打破了一个数据在一个环上只是一个点的情况，会造成 数据迁移需要设计多个database；还可能机器会挂掉；数据需要进行备份；
+一人分饰多角还需要maintain 额外的信息需要保存；
+
+数据丢失或者数据不可访问；
+数据备份问题： 一般是数据备份三份；
+
+Replication
+N nodes
+
+Avoid all replicas on the same rack
+
+数据库里面的帽子原则：
+CAP theorem： 这三点无法同时做到；需要有一个舍弃；
+1.Consistency
+2.Availability
+3.Partition Tolerance
+
+
+RDBMS放弃Partition Tolerance;
+MongoDB HBase Redis 放弃Availability
+CouchDB CassandraDynamoDb 放弃Consistency
+
+W
+所需的写操作成功数；
+R
+所需的读操作成功数；
+
+Consistency:
+Cassandra is a AP system according to the CAP theorem
+Tunable consistency
+N is the number of replicas
+W is the consistency level of write operations
+R is the consistency level of read operations
+
+
+Strong Consistency：
+W + R > N
+只要读到数据就一定是最新的数据；
+
+Quorum
+
+DynamoDB 用一个时钟向量的东西；追求high Availability w = 5 r = 5;
+Cassandra 用时间戳；受1ms的误差； 小于1ms的误差不能用Cassandra；
+放弃Consistency，但是还是有一个底线： Eventual Consistency；
+How to achieve eventual consistency?
+什么叫做Achieve eventual Consistency： Repairing Nodes；
+
+Repairing Nodes: 旧的数据更新为新的数据；
+1.Read Repair; R设置的与N不一样，但是还是有一定几率触发，从所有人那儿读数据；好处：所有数据收到以后可以比较；
+通过时间戳知道谁是最新的；
+
+2.Hinted Handoff；client要写一个数据时候，随便找一个节点；（不好的方法）
+重试，或者暂时不做的方法都不是好的方法；
+Google 的GFS是个很好地，由client来决定；
+
+3.Anti-Entropy Repair;
+Anti-Entropy Repair: 
+To routinely maintain node health;
+To recover a node after a failure while bringing it back to the cluster;
+To update data on a node containing data that is read frequently, and therefore does not get read repair.
+To update data on a node that has been down.
+To recover missng data or corrupted SSTables;
+
+
+数据不一致比较时间戳；
+
+How to detect inconsistency?
+Merkle Trees；构建Merkle Trees；
+每一块数据run一个hash function；再两两hash；
+
+如果数据更新不频繁，读取频繁，没关系；
+但是如果数据更新很频繁，读取不频繁，就不适用了；
+
+
+How to increase write speed？
+learn cassandra；
+
+1.往内存里写；
+2.往log里写；
+
+写数据快的代价就是读的速度慢；
+
+Cassandra适合写文件为主，读文件为辅这样的场景；
+
+
+How to increase read speed?
+Compaction
+
+SizeTieredCompactionStrategy(STCS)
+LeveledCompactionStrategy(LCS)
+DateTieredCompactionStrategy(DTCS)
+
+*ngFor : HTML 的attribute； 浏览器不认识；
+Angular JS会再pass一遍HTML； 
