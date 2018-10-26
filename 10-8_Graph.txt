@@ -1,0 +1,149 @@
+Trie:space complexity:
+
+Prefix only: O(n^2)
+Suffix only:O(n^2)
+Both prefix and suffix:O(n)
+
+m words with avg length of n:
+Worst case => no overlapping => O(m * n^2)
+Trie 的每一个TrieNode 对应的是Prefix+Suffix的一个组合，并不是某一个word或者几个words；
+
+If two different words reach to the same node weight will be overridden with bigger value;
+
+Graph:
+Mock: LC 323. Number of Connected 
+
+Given n nodes labeled from 0 to n - 1 and a list of undirected edges(each edge is a pair of nodes), write a function to find the number of connected components in an undirected graph;
+
+Example 1：
+Input n = 5 and edges = [[0,1],[1,2],[2,3],[3,4]]
+output :1
+
+Traverse the graph: BFS & DFS;
+BFS: 
+
+Graph: 
+A finite set of vertices also called as nodes;
+A finite set of ordered pair of the form(u,v) called as edge;
+
+(u,v) is the same as (v,u): undirected graph
+(u,v) is not the same as (v,u): directed graph
+
+1.Adjacency Matrix;
+2.Adjacency List;
+
+Adjacency Matrix:
+Adjacency Matrix is a 2D array of size V * V where V is the number of vertices in a graph. Let the 2D array be adj[][], a slot adj[i][j] = 1 indicates that there is an edge from vertex i to vertex j. Adjacency matrix for undirected graph is always symmetric. Adjacency Matrix is also used to represnet weighted graphs. If adj[i][j] = w, then there is an edge from vertex i to vertex j with weight w.
+
+Adjacency List: 
+An array of linked lists is used. Size of the array is equal to number of vertices. Let the array be array[]. An entry array[i] represents the linked list of vertices adjacent to the ith vertex. This representation can also be used to represent a weighted graph. The weights of edges can be stored in nodes of linked lists.
+
+
+Clone Graph:
+BFS &DFS 要求秒做 
+
+CLone an undirected graph. Each node in the graph contains a label and a list of its neighbors;
+
+
+A graph is simply represented by a graph node that serves as its starting point. In fact, the starting point could be any other graph nodes and it does not affect the cloning algorithm;
+
+
+Mapping 
+Map<UndirectedGraphNode, UndirectedGraphNode>
+Key is the node in original graph and value is the cprresponding cloned node
+
+
+walk through test cases; 
+<0,0'>
+<1,1'>
+<2,2'>
+<3,3'>
+<4,4'>
+
+Google 难题：
+Maximum number of edges in graph without a cycle
+
+DFS:
+Define Recursive Function:
+
+LC399: 
+
+
+Use Enumertation Not String; 
+只刷题，要思考；多思考；多思考；
+可读性；
+
+
+Sychronization: 
+Understand the issue with concurrent access to shared data?
+	Data could be a counter (int) or a data structure(e.g. a Map or List or Set)
+A critical section: a block of code that can only be safely executed by one thread at a time;
+
+A lock: an object that is "held" by one thread at a time, then " released"
+
+class ConcurrentHashMap:
+
+Volatile;
+Read-Write Lock
+ConcurrentHashMap
+
+Hw: Regular Expression Matching
+
+Class CopyOnWriteMap
+write very costly ,but read a lot; 
+
+原子操作：
+ComputeIfAbsent 不是原子操作，不能保证thread safe；
+
+Why doesn't Java ship with a CopyOnWriteMap?
+
+Definition for undirected graph.
+	class UndirectedGraphNode{
+		int label;
+		List<UndirectedGraphNode> neighbors;
+		UndirectedGraphNode(int x){
+			label = x;
+			neighbors = new ArrayList<UndirectedGraphNode>();
+		}
+	}
+
+
+Override hashCode()/equals()？
+
+
+Clone Graph: 
+
+Mapping
+Map<UndirectedGraphNode,UndirectedGraphNode>
+
+Key is the node in original graph and value is the corresponding cloned node
+
+HashMap uses hashCode() , == and equals() for entry lookup
+
+The lookup sequence for a given key k is as follows:
+	use k.hashCode() to determine which bucket the entry is stored, if any
+	If found, for each entry's key k1 in that bucket, if k == k1 ||k.equal(k1), then return k1's entry
+	Any other outcomes, no corresponding entry;
+
+Object's hashCode()
+
+Distinct integers for distinct objects
+Typically implemented by converting the internal address of the object into an integer;
+
+In java.lang.Object is declared as native , which means the implementation is provided by the JVM and may vary depending on your runtime environment;
+
+Object o1 = new Object();
+Object o2 = new Object();
+o1.hashCode()
+o2.hashCode()
+
+A Hex representation of the hashCode() value is used in the default implementation of toString(): running System.out.println(o1) prints something like Java.lang
+
+The default equals() method on java.lang.Object compares memory addresses;
+
+Key Point:
+Interview Question: 
+Implement HashMap; 
+
+
+
