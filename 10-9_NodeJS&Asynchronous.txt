@@ -1,0 +1,399 @@
+npm uninstall -g angular-cli
+npm uninstall -save-dev angular-cli
+
+npm uninstall -g @angular/cli
+npm cache clean
+npm install -g @angular/cli@latest
+
+
+rm -rf node_modules dist
+npm install --save-dev @angular/cli@latest
+npm install
+
+git status: to see something modified; 
+git log
+
+git remote show
+
+
+git remote add origin + URL
+
+git checkout master
+git checkout second_table
+
+git branch
+
+git pull
+
+
+git checkout -b new_branch(name of the branch)
+
+git push --set-upstream origin new_branch
+
+git ssh digitalocean
+
+git config --global user.mail "you@example.com"
+git config --global user.name "your name"
+
+
+Asynchronous programming: 
+JavaScript is Synchronous
+
+One process executing at a time;
+JavaScript is synchronous
+Think of it as only one line of code executing at a time;
+
+异步或是不同步的情况：
+More than one proecess running simultaneously;
+Broswer and Node.js do things asynchronously;
+V8 does not;
+某一时刻有多行代码被执行；
+浏览器在异步的同时做着很多事情；
+node.js可以和多个进行通信；但执行javascript代码是同步的；
+JavaScript V8浏览器引擎是同步的；
+开着zoom，并且开着浏览器；一边听音乐一边打游戏；
+
+The Browser: 
+Rendering Engine <-> The JavaScript Engine <-> Http Request
+执行JavaScript时候是一行一行执行；
+
+Asynchronous:
+
+b()
+Execution Context
+(create and execute)
+
+a()
+Execution Context
+(create and execute)
+
+Global Execution Context
+(Created and code is executed)                  CLick  HTTP Request
+												Event Queue
+处理异步的方式：
+1.callback function；
+2.promise
+
+
+Callback
+
+A function passed to some other function;
+
+Which we assume will be invoked at some point;
+
+The function "call back" back invoking the function you give it when it's done doing its work
+
+虽然callback 被广泛应用于解决异步通信的问题；但是并不代表着只要是接受callback function的一个function就一定是异步的function；是同步的function；
+
+Callback的问题： 
+1.Callback function被调用的时候只能调用他，只能选择调用或者是不调用，没有丰富的选择；
+
+callback主要用于异步编程；可能出现的是我要做10件事； 
+
+
+promise: 
+
+"Imagine you are a kid. Your mom promises you that she'll get you a new phone next week."
+
+"You don't know if you will get that phone until next week. Your mom can either really buy you a brand new phone , or stand you up and withhold the phone if she is not happy"
+
+Promise 的好处： 很整齐；
+Asynchronous Programming
+
+Angular js & spring; 
+ES6 很多浏览器不支持;
+
+Syntax sugar
+
+
+
+Node.js: 
+历史： 用的chrome的开源的A8引擎；引擎拿上来就可以编译JavaScript的代码；
+Chrome是C语言写的；在Chrome里可以干很多事，网络通信等；可以与其他C语言的模块进行通信，实现对文件系统的读写；
+
+写server端的能力；
+I/O的三大功能：文件读写，和数据库的交互，网络的通信；
+
+Express 架构； 写webserver更便捷；
+
+Node.js
+Event-Driven;
+EventEmitters -> events -> event loop -> event handlers
+
+Event Emitter
+
+var events = require("events"),
+	emitter = new events.EventEmitter(),
+	username = "Eyal",
+	password = "Vardi";
+
+//an event listener
+emitter.on("userAdded", function(username,password){
+	console.log("Added user " + username);
+});
+
+//Emit an event
+emitter.emit("userAdded", username,password);
+
+
+
+function addUser(username,password){
+	console.log("Added " + username);
+}
+
+addUser("Lei", "pass")
+
+Event-driven 的思考方式有的场合更好；
+
+Node.js
+             Multi Threaded Server
+
+Request		Thread Pool		
+
+Request		Thread Processing	
+			Thread Waiting			=>Blocking IO
+Request
+
+Request
+
+
+解释线程和进程的关系；
+希望电脑能同时做很多事情；
+
+多核计算机；
+单核计算机的分时；对CPU共享的元化，计算机的用户感受不到任务的切换；
+每一个进程可以用CPU一段时间； 
+
+
+Context switch 上下文切换；处理到哪里了要记住，用一些寄存器；寄存中间状态；
+
+虽然计算花了1ms，寄存1ms，读出来1ms；这样就有优化空间；
+
+ 多线程比单线程好；
+
+ 多线程问题：
+ context switch 代价高；
+ 多进程
+
+Thread pool；
+I/O 特别多的是node js； I/O不多的是多线程；
+
+Node.js 可以处理很多请求；
+
+Express架构；处理请求；
+
+Restful API： 
+
+API ： Application Processing Interface；
+
+REST(REpresentational State Transfer): 表现性状态转移；
+Resource；
+资源；
+
+REpresentational；
+表现性；
+GET /api/datacenters HTTP/1.1
+Accept: application/xml
+
+State Transfer
+POST /api/vms HTTP/1.1
+Accept: application/xml
+Content-type: application/xml
+
+<vm>
+	<name>vml</name>
+	<cluster>
+		<name>default</name>
+	</cluster>
+	<template>
+		<name>Blank</name>
+	</template>
+	<memory>536870912</memory>
+
+
+	<os>
+		<boot dev = "hd"/>
+	</os>
+</vm>
+
+Response: 
+
+REST: 通过某一种或多种对某一些资源的状态转移的描述进行沟通的一些规则；
+资源，表现性，和状态转移
+
+REST:
+Stateless:
+No Client state at server;
+Any state is maintained at Client side;
+Each request has all the information to process the request;
+
+
+Stateless <-> stateful
+
+stateful: localhost:3000/myprofile； 不包含处理这个请求的所有信息；没有表述到底想要谁的profile；
+stateful: 不同的人调用同意请求调用不同的事情，得到不同的方法method;
+Server 如何知道该返回谁的method， server需要记住所有的method；
+
+
+Stateless 方法：不管谁请求他，都会的到同一个结果；
+localhost：3000/profile/lei
+localhost：3000/profile/yuan
+
+RESTful API 设计准则： 
+1.A URL identifies a resource
+	 GET http://example.gov/api/v1/magazines/1234/
+2.URLs should include nouns, not verbs.
+	POST http://example.gov/api/v1/magazines/1234/articles
+	反例：http://www.example.gov/magazine/1234/create
+3.Use HTTP verbs(GET,POST,PUT,DELETE) to operate on the collections and elements;
+做增删改查；
+
+HTTP Method     POST              GET       PUT                 DELETE
+CRUD OP        CREATE             READ      UPDATE              DELETE
+/dogs       Create new dogs      List dogs  Bulk update         Delete all dogs
+/dogs/1234      Error            Show Bo    If exists, update Bo;  Delete Bo 
+											if not ,error    
+4. Use plural nouns only for consistency(no singular nouns) 用复数不用单数；
+
+5.You shouldn't need to go deeper than resource/identifier/resource
+
+6.Put the version number at the base of your URL
+	http://exxample.com/api/v1/path/to/resource
+
+7.Specify optional fields in a comma separated list
+	GET 
+	http://www.example.gov/api/v1/magazines/1234?fields=title,subtitle,date
+
+
+任何application 都是对数据的增删改查；
+保存数据的数据库：
+关系型数据库：
+
+NoSQL: 
+持久性：日志和备份 persistence
+一致性：事务 atomic
+沟通语言： SQL
+
+逻辑视图！= 物理视图
+
+因为大数据的到来，所以需要NoSQL； 一个公司的数据存在一个机器里面已经不够用了
+
+
+NoSQL：
+1.Key-Value databases
+	Redis，memcached，Dynamo...
+
+	Key    value
+2.Document databases:
+	MongoDB, CouchDB..
+	XML, JSON,BSON...
+
+3.Column family stores
+	Cassandra, Hbase...
+	Column family
+
+聚合型数据库
+没有显式的结构，但仍逃不了隐式的结构；
+数据是按一种方式聚合的；
+
+
+关系型 VS 聚合型
+如何选择？ 
+是否主要查询一种聚合方式
+
+
+MongoDB: 文档型数据库： 存JSON数据
+
+JSON（JavaScript Object Notation）
+{
+	"id":"0001",
+	"name":"Lei Yuan"，
+	"age":"80",
+	"sex":"male",
+	"handsome":"true"
+}
+MongoDB
+Collections
+
+How to save data
+
+what if we want to add "email" to "Lei"
+
+
+How to read faster with fragments
+
+用链表/指针；
+
+How to reduce fragments? 
+Use padding; save some space; 
+
+How much space is needed to save?
+1.At the very beginning, 10% space  100 + 10 space;
+
+2.2^n 凑成2^n;   so if 20KB, we have 20 + 12 = 32KB; 
+就是凑整，拼积木
+
+Existing file
+
+
+Existing file
+
+
+Existing file
+
+
+
+Existing file
+
+Size to be pre-allocated
+16MB
+
+
+32MB
+
+
+
+64MB
+
+上限是2G； 
+
+
+how to reduce fragments caused by update
+JSON:
+{
+	"a":3,
+	"b":"xyz"
+}
+
+MongoDB 存的是BSON data； 
+BSON data:
+
+Document length -> value type -> key -> value 
+value type -> key -> value length -> value;
+
+How to find ID in [5000,7000]
+建立一个二叉查找树Binary Search Tree；
+用ID建立；
+
+
+How to accelerate read&write even more:
+引入内存；
+
+Problem: How to handle crash? 
+We use log to handle crash...
+
+记log的方式；
+顺序写或者连续写；
+
+
+
+
+
+
+
+
+
+
+
+
+
