@@ -1,0 +1,274 @@
+Docker: 
+没有同类中的其他东西；
+
+Redis： 内存中的数据库
+
+NodeJS： web server 处理HTTP请求的；
+
+Docket: Build, Ship(部署) and Run any App , anywhere;
+
+向服务器部署代码非常困难；
+
+为什么现在向服务器部署代码困难？
+
+因为有复杂的技术栈；
+
+用到的技术栈很多，相对而言写的代码变少了；
+NodeJS 简化了技术栈；
+
+不同的技术栈之间的版本依赖与冲突；
+
+How to solve it？
+
+写一个软件或者程序：
+
+需要一台机器： Machine -> Linux -> Apache(web servrer) -> Tomcat6(一个容器去运行Java application) -> Application;
+
+ 把一切东西打一个包，生产一个image； 把image放到另一台机器上；
+
+ App
+ Tomcat6
+ Apache
+ Linux
+ Machine
+
+ 只把Tomcat6，Apache和LInus 打包成image；
+
+ 但是打包之后很有可能Tomcat升级；
+ 现在前1000的网站都在用 Nginx；
+
+ 原本在你机器上可以run的program 但是到了其他设备上就不能run了；
+
+The Challenge：
+静态网页；
+后台的worker；
+
+
+Static Website;				User DB
+Background workers;			Web Frontend			
+
+Web frontend
+
+Queue， Redis 
+
+Docker类似于集装箱；
+
+Containers vs VMs
+
+Containers are isolated, but share OS and , where appropriate, bins/libraries;
+
+
+VM: 
+
+
+Containers(Dockers)
+
+Cornerstones of Docker( Docker的基石):
+1.Docker Images；
+
+2.Union File System；
+
+3.namespace；
+
+4.cgroup；
+
+
+
+1.Docker Images: 
+Runtime file system(read-write){
+WAR file added(read-only)
+Tomcat installed(read-only)
+Java 8 installed(read-only)
+Apache HTTP installed(read-only)
+}
+Debian Wheezy(read-only base image)
+Linux Kernel 3.13.3(read-only bootfs)
+
+
+2.Union File System:
+Docker 核心的核心；
+
+3.namespace:
+	pid1.config.json; pid2.config.json
+	线程不一样；隔离
+
+4.cgroup:资源的限制； Control group；
+Resource Limiting；
+app1不能用光整个资源；
+
+一个进程最多用到多少内存；
+
+Docker Components:
+
+Client  					Docker_Host 			 Registry
+docker build  			Containers(VM)					Nginx
+docker pull				Images
+docker Run 				Docker Daemon
+
+Docker daemon
+	○ Runs on a host machine. It does the heavy lifting of building, running, and distributing
+	Docker containers
+● Docker client
+	○ The primary user interface to Docker. It accepts commands from the user and
+	communicates back and forth with a Docker daemon
+● Docker images
+	○ Docker image is a read-only template, which is used to create containers
+● Docker registries
+	○ Docker registries hold images, which are public or private stores from which you
+		upload or download images.
+● Docker containers
+	○ Docker containers are similar to a directory.
+	○ A Docker container holds everything that is needed for an application to run.
+	○ Each container is created from a Docker image.
+	○ Docker containers can be run, started, stopped, moved, and deleted.
+	○ Each container is an isolated and secure application platform.
+
+Install Docker:
+
+try rocket.char;
+
+
+Mongo3.0
+Dockerfile;
+
+一个docker image包含了很多的docker container； 如果没有要pull下来image；
+
+
+Build成一个docker image； 
+
+Docker Compose；
+
+ab test； Apache 
+
+
+ab -c 10 -n 1000 http://www.google.com/
+
+
+ab -c 10 -n 100 http://127.0.0.1:3000/problems/  : 向网站发送10个包，100ms发一个；
+
+ab -c 10 -n 100 http://127.0.0.1:3000/problems/ 
+
+jmeter:
+
+loadrunner;
+
+npm的Semantic Versioning： 让版本有语义；
+有语义的版本；
+
+npm init
+
+例如： 
+1.3.2
+
+1 是breaking：Incompatible API changes: Breaking change
+3 是feature:  add backwards-compatible functionality: new Feature
+2 是fix : make backwards compatible bug fix :bug fix
+
+
+~ tilde    ^caret --save
+
+ ^caret --save : 
+ 不装到最新版本；可以升级到第二位的最新版；
+
+ 比如 ^2.1.3
+ 2.1.4,2.1.5 will work
+ 3.0.0 不work；
+
+ ~tilde
+
+ ~2.1.3
+ 2.1.4,2.1.5work；
+ 2.2.0不work；
+
+
+ 如果100%work的话就什么都不加；
+
+ >= 就是升到最高版本；
+
+
+
+ 多线程Multi-threads:
+
+ Implement Thread safe Blocking Queue
+
+ The producing thread will keep producing new objects and insert them into the queue, until the queue reaches some upper bound on what it can contain. It's limit, in other words. 
+ If the blocking queue reaches its upper limit, the producing thread is blocked while trying to insert the new object. It remains blocked until a consuming thread takes an object out of the queue.
+
+The consuming thread keeps taking objects out of the blocking queue, and processes them. 
+If the consuming thread tries to take an object out of an empty queue, the consuming thread is blocked until a producing thread puts an object into the queue.
+
+Create a Java Thread:
+Basic Ways:
+Extending the Thread class
+Implementing the runnable interface;
+
+
+Advanced Ways:
+ExecutorService
+CompletableFuture
+
+Because ExecutorService is an interface, an instance of any its implementations can be used. There are several implementations to choose from in the java.util.concurrent package or you can create your own. 
+For example , the ThreadPoolExecutor class has a few constructors which can be used to configure an executor service and its internal pool.
+
+ExecutorService executorService = 
+	new ThreadPoolExecutor(1,1,0L,TimeUnit.MILLISECONDS,
+	new LinkedBlockingQueue<Runnable>());
+
+public interface Callable<V>{
+	V call() throws Execption;
+}
+
+public class FactorialTask implements Callable<Integer>{
+	int number;
+
+	//standard constructors
+
+	public Integer call() throws InvalidParameterExeception{
+		int fact = 1;
+		//...
+		for(int count = number; count > 1 ; count--){
+			fact = fact * count;
+		}
+
+		return fact;
+	}
+}
+
+
+The result of call() method is returned within a Future object:
+@Test
+public void whenTaskSubmitted_ThenFutureResultObtained(){
+	FactorialTask task = new FactorialTask(5);
+	Future<Integer> future = executorService.submit(task);
+
+	assertEquals(120,future.get().intValue());
+}
+
+
+Interface Future<V>
+
+class CountDownLatch 门闩； 
+
+Runnable & Callable; 
+
+Pause thread 最简单的方法是sleep；
+
+wake 是Object 本身的method； 
+
+区别: sleep本身还是占着线程；占着资源没有release；
+wake 会把线程release 掉；
+
+Synchronization： 目的是保护 数据 share data ； shared result；
+如果有多个线程去抢占同一个资源就会有问题，如果各管各的就没有这个问题；
+坏处：效率低；
+
+Synchronized => Sequential
+
+关键词: Only a single thread can run any synchronized method in an object
+
+throughput低； 
+
+
+
+
+
