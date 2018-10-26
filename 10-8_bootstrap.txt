@@ -1,0 +1,39 @@
+Node.js, angular, CSS(控制格式）, html(设计页面）,jquery， bootstrap；
+JavaScript and type script； 
+
+最重要的部分是App这个folder；
+app.component.
+
+ts: type script;是JavaScript的超集；
+
+ng g c problem-list -it -is
+
+修改app.component.html里面的代码；
+显示problem list；
+<app-problem-list></app-problem-list>
+
+安装bootstrap：
+npm install bootstrap --save
+
+安装jquery：
+
+npm install jquery --save;
+
+ng g s data
+
+依赖注入；injectable；
+可以注入到别人那儿去；
+
+Data service
+
+in components folder: 
+
+ng g c problem-detail
+Angular 2 router; 
+
+install webstorm
+
+cd 到webstorm bin
+./webstorm.sh
+
+Angular JS 放一个东西，让全局都能访问的东西；
