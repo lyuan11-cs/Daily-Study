@@ -1,0 +1,325 @@
+4个pipe:
+Uppercase  Lowercase
+date
+
+currency
+percent
+
+Angular 2 就只有这4个pipe； 
+但是其他的pipe可以自定义；
+
+cd oj-client/src/app/
+mkdir pipes
+
+cd oj-client/src/app/pipes
+ng g pipe search
+
+cd oj-client/src/app/services
+ng g s input
+Need to provide in the app.modules
+debounceTime
+
+今天完成了搜索的功能， 学习了pipe；
+
+npm install --save node-rest-client
+
+sudo apt install python-pip
+
+sudo pip install Flask
+
+Docker 用python 的接口来操作；
+
+Docker image
+
+
+Python用 # 做注释；
+
+''' 也可以做多行的注释；
+
+安装Nginx： 
+Ubuntu的安装与Windows和Mac上都不同；
+
+Append the appropriate stanza to /etc/apt/sources.list. 
+If there is concern about persistence of repository additions (i.e. DigitalOcean Droplets), 
+the appropriate stanza may instead be added to a different list file under /etc/apt/sources.list.d/, 
+such as /etc/apt/sources.list.d/nginx.list.
+
+Add to /etc/apt/sources.list:
+
+deb http://nginx.org/packages/ubuntu/ xenial nginx
+deb-src http://nginx.org/packages/ubuntu/ xenial nginx
+
+sudo apt-get update
+sudo apt-get install nginx
+
+start Nginx: 
+sudo service nginx start
+
+If you see error “The following signatures couldn’t be verified because the public key is not
+available: NO_PUBKEY $key “, execute the following:
+## Replace $key with the corresponding $key from your GPG error.
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys $key
+sudo apt-get update
+sudo apt-get install nginx
+
+systemctl status nginx.service
+
+cd /etc/nginx
+
+All nginx config files are located in /etc/nginx
+● /etc/nginx/sites-available
+The sites-available folder is for storing all of your virtual host configurations,
+whether or not they're currently enabled.
+
+● /etc/nginx/sites-enabled
+The sites-enabled folder contains symlinks to files in the sites-available folder.
+This allows you to selectively disable virtual hosts by removing the symlink.
+
+● /etc/nginx/conf.d ( not recommended)(load 比较common的配置） ) 
+You can achieve the same using conf.d but it is not recommended. Use conf.d for
+things like module loading, log files, and other things that are not specific to a
+single virtual host.
+
+sites-available 的文件映射到sites-enabled;
+conf.d: directory; 
+
+最简单的Nginx的server 的定义： 
+
+server{
+	listen 80;$ ：表示的是nginx 监听80端口；   
+	server_name www.example.com;$   
+	root /var/www/examples;$
+$
+	location / {$
+		try_files $uri $uri/ /index/html;$
+	}$
+}$
+
+server
+- define a virtual host: virtual host； 自己的server上可以run很多站点sites；
+server{
+	
+}
+
+listen
+- specifies the port that your server will listen at. If there’s no port in a url, that means it’s 80.
+
+server{
+	listen 80;
+}
+
+server_name 多个server都监听80端口，但是他们的域名不一样；一个port只能有一个程序run在上面；
+- This directive is essentially a matcher for the url bar. Whenever any sort of request comes
+in to nginx, it takes a look at the url and looks for a server block that has a matching
+server_name directive.
+
+server{
+	listen 80;
+	server_name example.com;
+}
+
+
+root
+- This is the key to serving static sites. If you are just trying to lay down some html and css,
+the root directive specifies the directory that you have stored your files in.
+
+server{
+	listen 80;
+	server_name example.com;
+	root /var/www/example;
+}
+
+
+location
+Location takes two parameters, a string/regex and a block. The string/regex is a matcher
+for a specific location.
+server{
+	listen 80;
+	server_name example.com;
+	root /var/www/example;
+
+	location / {
+
+	}
+}  
+
+/通配符；
+
+try_files
+- (Inside location block) Try files takes a list of filenames or patterns that it will try to find in
+you root directory, and it will serve the first one it finds.
+server{
+	listen 80;
+	server_name example.com;
+	root /var/www/example;
+
+	location /{
+		try_files $uri $uri/ /index.html;//静态网站；  $uri: Nginx 给我们populate 的一个变量;
+	}
+}
+
+
+Nginx Basic -Sequence: 
+
+- request comes in for https://example.com, nginx fields it.
+- nginx finds the server block with a server_name of example.com, and picks this one to
+handle the request
+
+- nginx matches the request against any location blocks present. Since the / block matches
+anything after the root domain, we have a match.
+
+- inside the matching location block, nginx decides to try serving a file up. First, it looks for a
+file named nothing, since uri maps to nothing in this case — no luck. Then it looks for a
+directory called nothing, still no luck. Finally, it looks for /index.html within the root
+directory, /var/www/example, and finds that file. It then serves it up to you.
+
+
+Load Balancing
+In Nginx, we can use directive upstream to define a proxy and its underlying servers.
+
+upstream backend{
+	server backend1.example.com;
+	server backend2.example.com;
+	server backend3.example.com;
+}
+Then use proxy_pass in server:
+
+server{
+	location /{
+		proxy_pass http://backend;
+	}
+}
+
+You can change default round robin way to a weighted round robin by specifying weight for
+each underlying server:
+
+
+Then use proxy_pass in server:
+upstream backend{
+	server backend1.example.com weight = 1;
+	server backend2.example.com weight = 2;
+	server backend3.example.com weight = 4;
+}
+
+There is a case that we should keep the connection consistent - that is, if a client initially talks
+to a server, it will keep talking to the same server afterwards. This is required when the server
+is not stateless.
+We can implement a ip-based hash load balancer using directive ip_hash:
+
+
+127.0.0.1
+
+cd /etc/nginx
+cd sites-available
+
+
+sudo vim example
+
+
+server{
+	listen 80;
+	server_name example.com;
+	root /var/www/example;
+}
+
+cd /var/www
+
+sudo mkdir example
+cd example
+sudo vim index.html
+
+<html>
+	<body>
+		<h1>Hello Nginx!</h1>
+	</body>
+</html>
+
+
+cd /etc/nginx/sites-available/
+ls
+sudo vim example
+
+server{
+	listen 80;
+	server_name example.com;
+	root /var/www/example;
+	location / {
+		try_files $uri /index.html;
+	}
+
+}
+
+
+cd /var/www/example/
+ls
+
+sudo cp index.html about.html
+
+sudo vim about.html
+
+
+<html>
+	<body>
+		<h1>About page</h1>
+	</body>
+</html>
+
+cd -
+cd ../sites-enabled
+ls
+
+sudo ln -s /etc/nginx/sites-available/example /etc/nginx/sites-enabled/example
+
+
+cd ..
+sudo vim nginx.conf
+
+delete: 
+	include /etc/nginx/conf.d/*.conf;
+
+sudo service nginx restart
+
+sudo vim /etc/hosts
+
+127.0.0.1   localhost
+127.0.1.1  lyuan11
+
+多个网站在Nginx 上的效果；
+
+
+cd /etc/nginx/sites-available/
+sudo vim second;
+
+sudo cp example second
+
+cd ../sites-enabled
+
+sudo ln -s /etc/nginx/sites-available/second /etc/nginx/sites-enabled/second
+
+
+cd /var/www/
+
+sudo cp -r example/ second/
+
+cd second
+
+sudo vim index.html
+
+In Nginx, we can use directive upstream to define a proxy and its underlying servers.
+
+upstream backend{
+	server backend1.example.com;
+	server backend2.example.com;
+	server backend3.example.com;
+}
+Then use proxy_pass in server:
+
+server{
+	location /{
+		proxy_pass http://backend;
+	}
+}
+
+
+round Robin
+
