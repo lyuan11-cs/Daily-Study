@@ -1,0 +1,41 @@
+10-2:
+
+mysql_basic.sh
+
+#login from commandline
+mysql --host=127.0.0.1 --port=3306 --user=root --password=root
+
+#show all available databases
+show databases
+
+#create a db named test1
+CREATE DATABASE test1;
+
+#use the specified db as the selected db
+USE test1;
+
+#show the selected db
+select databse();
+
+#show table in selected db
+show tables;
+
+#show contents from selected table
+select * from <table_name>;
+
+#drop the db named test1
+drop database if exists test1;
+
+application.yml
+server:
+	port:9000
+spring:
+	application:
+		name: running-information-analysis-service
+	datasource:
+		url:jdbc:mysql://localhost:3306/running_information_analysis_db
+		username:root
+		password:root
+	jpa:
+		hibernate:
+			ddl-auto:update
