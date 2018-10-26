@@ -1,0 +1,563 @@
+Uber-2
+Modern Java Application Development
+
+Agenda:
+Spring Boot, Spring Boot, Spring Boot
+Everything you need to know about Spring Boot
+JPA
+Spring Data
+SQL Database
+Container
+Docker
+
+What is Spring Boot?
+Why Spring Boot?
+Relationship between Spring Framework and Spring Boot
+What are the key components of Spring Boot?
+
+What is Spring Boot?
+	Spring Boot = Spring Framework +Spring Web MVC + Opinionated Auto Configurations + many production ready features
+
+Why Spring Boot?
+	1.Spring Boot favors convention over configuration and is designed to get you up and running as quickly as possible
+	2.You can create standalone, production ready Spring based application and deploy successfully in minutes without scratching your head 
+
+通过Convention over configuration ； 通过约定俗成的configuration；省去了很多部署上的麻烦；
+Spring Boot用约定俗成的配置，省去了很多麻烦；
+
+
+Compared with traditional Spring application development 
+	Almost 0 manual configuration 
+	Fast development and deployment ：加速开发和部署的过程
+	Started POM VS Individual Dependencies：便于管理dependency，加速开始写业务代码的时间；
+	Built-in application metrics, health check, and external configurations
+
+	Absolutely no code generation and no requirement for XML configuration
+
+Almost 0 manual configuration：
+	Spring Boot does auto configuration for you
+	works as expected, no frustration
+	Use external properties to control configuration
+
+在程序外部控制参数就可以更改他的配置；
+
+Fast development and deployment;
+war file 的structure很麻烦； Java 自带的jar；
+	Once dev is finished, just run！
+	Zero turnover time
+	Standalone application
+
+Embedded Tomcat:非常好的方法
+	Fat Jar
+	Package servlet container along with your application code together
+	Easy to config
+	Easy to be automated
+	Easy to setup
+	Easy to start
+make jar not war
+
+Starter POM vs Individual Dependencies
+What are the problems with individual dependencies?
+	Hard and tedious to manage
+	Need to spend much effort on reading documents, figuring out what dependencies to 	use and what version
+	What about upgrading dependencies?
+
+Java 和 Spring 入门门槛没有Spring Boot之前特别高；
+Starter POM是dependency的集合；
+Hibernate 支持哪个版本
+Upgrade dependency 之后版本可能会有冲突；
+
+Dependency Hell
+
+Starter POM:
+A group of dependencies that is proven to work together to serve one Spring dependency functionality
+Starters are a set of convenient dependency descriptors that you can include in your application. You get a one-stop-shop for all the Spring and related technology that you need, without having to hunt through sample code and copy paste loads of dependency descriptors.
+
+Starter POM
+	Spring-boot-starter-web
+	Starter for building web, including RESTful , applications using Spring MVC. Uses Tomcat as the default embedded container
+	What does it look like?
+
+
+Built in application metrics, health check and external configurations
+What is application metrics?
+What is applicaiton health?
+What is external configuration?
+
+Application Metrics
+	How well your application is running?
+用来测量Application 运行的状态；
+
+Application Metrics 帮忙分析和排查故障；
+对于侦测程序的运行非常重要；
+
+Application Health：
+	Is your application healthy？
+
+Applicaiton 本身和application dependency是不是能正常运行；
+
+Application-1 和 Application-2都能运行才叫Application Health；
+
+运行一个程序还需要用哪些dependency：
+
+Absolutely no code generation or XML configuration?
+	Do you like XML configuration?
+	Do you like code generation?
+
+Spring Roo: code generator;非常不好用；
+
+XML configuration: 配置起来比较复杂， 而且很难维护，中间也没有帮忙检查和报错；
+直接在运行的时候才会提示你程序有问题；
+
+Fact check
+Spring Boot Adoption
+
+POM Structure
+
+code structure：代码组织
++- example
+	+- myproject
+		+- Application.java
+		|
+		|
+		+- domain
+		|	+- Customer.java
+		|	+- CustomerRepository.java
+		|
+		+- service
+		|	+- CustomerService.java
+		|
+		+- web
+			+- CustomerController.java
+
+DAO: 
+Data Access Object：关于数据访问的类
+访问data source
+
+
+Main method: 
+import org.springframework.boot.*;
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.stereotype.*;
+import org.springframework.web.bind.annotation.*;
+
+
+@RestController
+@EnableAutoConfiguration
+public class Example{
+	@RequestMapping("/")
+	String home(){
+		return "Hello World!";
+	}
+
+	public static void main(String[] args) throws Exception{
+		SpringApplication.run(Example.class,args);
+	}
+}
+
+Create executable jar(Fat jar)
+java -jar example.jar
+
+
+Externalized Configuration
+Application.properties and YAML variants
+Code change VS Configuration change
+
+优势：Externalized Configuration
+代码和程序运行环境进行一些分离；
+不需要改代码，只需要改配置；
+一套代码可以在多套环境里面运行；
+
+Application.properties & YAML variants
+作为developer的话， code change是很麻烦的；
+
+application.properties
+	spring.datasource.url=jdbc:mysql://localhost/test
+	spring.datasource.username=dbuser
+	spring.datasource.password=dbpass
+	spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+
+Application.properties:
+	You can also define your own property value;
+	And inject using @Value("${demo.name}")
+
+Are you still using JDBC?
+	JDBC 写起来很麻烦；
+
+Java Persistence API(JPA) 屏蔽底下的一些数据访问和存储的东西；是这一层的抽象；
+What is JPA?
+Why JPA?
+How to use JPA?
+
+What is JPA?
+	Java Persistence API(JPA) is a Java application programming interface specification
+		that describes the management of relational data in applications using Java Platform,
+		Standard Edition and Java Platform,Enterprise Edition
+	The API itself,defined in the javax.persistence package
+	the Java Persistence Query Language(JPQL)
+	object/relational metadata
+
+JPA 是Java EE的一种规范
+
+Why JPA?
+	ORM: Object Relation Mapping: 关系型数据map到对象上面
+	Persistence：
+	Query
+Hibernate：之前使用起来比较复杂；
+How to use JPA?
+	Spring Way
+		Spring Data JPA
+		userEntityRepository.save(someUserEntity);
+
+What is Spring Data?
+	Spring way of data access abstraction
+	Spring Data's mission is to provide a familiar and consistent, 
+		Spring-based programming model for data access while still
+		retaining the special traits of the underlying data store.
+JPA 屏蔽了一些访问的细节；
+通过JPA的方式来访问数据库；
+Spring不仅能用JPA的方式进行访问，还能封装一些NoSQL；
+
+要使用Spring Data 都用一种统一的方式；
+主流的data store杜能支持；
+Spring Data Modules：
+Core Modules： Core，JPA,MongoDB, Neo4jm, REST, Redis
+
+Spring Data JPA:
+	1.Spring Way of doing JPA
+	2.Spring Data JPA aims to significantly improve the 
+	implementation of data access layers by reducing the effort to the amount 
+	that's actually needed.
+	3.As a developer you write your repository interfaces, including custom finder methods, and Spring will provide the implementation automatically.
+
+
+Spring Data JPA
+	Let's see a really cool example 
+		List<Person>
+			findPeopleDistinctByLastnameOrFirstname(String lastname,String firstname);
+		List<Person>
+			findByLastnameOrderByFirstnameDesc(String lastname);
+
+Spring Data JPA
+	Query declaration
+		@Query("select u from User u where u.firstname like %?1")
+		List<User>findByFirstnameEndsWith(String firstname);
+
+		@Query(value="SELECT * FROM USERS WHERE
+			EMAIL_ADDRESS = ?1",nativeQuery = true)
+		User findByEmailAddress(String emailAddress)
+
+
+Spring Data JPA
+Repository
+DAO in Design Principle;
+
+
+关系型数据库：
+有结构的，数据和数据之间的关系可以通过表或者Key来表示；
+
+Why is called relatioanl database？
+3 normal forms 三种范式；
+
+1NF normal form；结构化，保证数据存储在同一个地方；
+	
+2NF
+	It is in first normal form 
+	All non-key attributes are fully functional dependent on the primary key
+
+3NF
+	It is in second normal form
+	There is no transitive functional dependency
+
+In memory relational database
+H2:
+	Very fast, open source, JDBC API
+	Embedded and server models; in-memory databases
+	Broswer based Console application
+	Small footprint:arount 1.5MB jar file size
+
+Container 容器化技术；
+
+What is VM?管理操作系统的
+What is Container？ 轻量化的
+What are the relationships among host OS, VM and Container?
+Containers是一种轻量化的容器；Containers share 操作系统
+
+
+VirtualBox
+Containerization is a system of intermodal freight transport using intermodal containers(also called shipping containers and ISO containers) made of weathering steel. The containers have standardized dimensions;
+
+What are the advantages of container technology vs VM?
+占用资源少，成本低
+Fast,LightWeight, Quick setup
+
+LXC(Linux Containers)
+is a OS-level virtualization technology that allows creation and running of multiple isolated Linux virtual environments(VE) on a single control host. These isolation levels or containers can be used to either sandbox specific applications, or to emulate an entirely new host. LXC uses Linux's cgroups functioanality, which was introduced in version 2.6.24 to allow the host CPU to better partition memory allocation into isolation levels called namespaces
+
+Docker
+	You can think it as an extension of LXC
+	Docker is developed in the Go language and utilizes LXC, cgroups, and the Linux kernel itself.
+
+How to use Docker?
+	Fast local environment setup
+	Package everything around your application
+		Docker contains wrap a piece of software in a complete filesystem that 
+		contains everything needed to run:code ,runtime , system tools, system libraries
+
+Docker Compose
+	Compose is a tool for defining and running multi-container Docker applications.
+	With Compose, you use a Compose file to configure your application's services. 
+	Then, using a single command, you create and start all the services from your configuration
+
+Docker Machine
+	Machine lets you create Docker hosts on your computer, on cloud providers, and inside your own data center. It creates servers, installs Docker on them , then 
+	configures the Docker client to talk to them.
+
+Docker
+	What is Dockr image?
+		An image is an inert, immutable, file that's essentially a snapshot of a
+		container
+	What is Docker container?
+		An instance of a Docker image
+
+	How to build your Docker Image?
+
+	Run Docker build
+	Docker 
+		How to run a Docker container?
+			Docker run {IMAGE_NAME}
+		Docker run common arguments
+			-p 8080:8080
+			-name someName
+			-v hostDir:containerDir
+			-e environment_variable=env_value
+			-d run container in background
+Silver bullet
+
+Spring Boot 解决什么问题：
+用Spring 开发中的快速开发，快速部署，dependency；
+
+Production ready的feature；
+
+Spring Data解决什么样的问题：
+Data Access Abstraction
+抽象Data Access method；
+
+数值运算，数值分析；解决不同的问题；
+
+mvn clean package
+Hibernate 是JPA的一个provider
+@Entity 表示这个东西会被持久化的一个class；
+
+lombok  代替getter setter；
+Embeddable
+
+Install Lombok plugin
+@Service
+
+
+Modern Java Application Development
+
+Spring Boot和Spring Data 都解决什么问题
+1.哪里可以知道有哪些pom dependency， pom repository可以用，如何找到我需要的dependency
+和repository
+
+What is starter POM?
+
+dependency是固定的java依赖的库；
+dependency的三个关键属性：groupId, ArtifactId, version
+
+Repository： maven central repository；
+
+starter POM包含了dependency的集合；包含了程序功能的一组dependency；
+https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#using-boot-starter
+
+为什么只有spring-cloud-starter-parent出现在了dependency management section里面？
+maven structure
+Starter POM:
+What is Maven？
+	Java dependency management tool
+What is Dependency Management in a dependency management tool?
+The dependency management section is a mechanism for centralizing dependency information; 
+
+Dependency Management:	
+1.Allows to consolidate and centralize the management of dependency
+versions without adding dependencies which are inherited by all children
+2.Control of versions of artifacts used in transitive dependencies.
+
+
+Why do we need to inherit from spring cloud or spring boot starter parent?
+
+Let Spring Boot manage dependencies it's able to manage 
+Spring Boot 保证了version可以work together
+
+<parent>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-parent</artifactId>
+	<version>1.4.1.RELEASE</version>
+</parent>
+
+不仅maven 的版本，plugin的版本也可以帮忙管理
+
+继承了starter的好处，可以帮忙管理dependency 和version
+Did we specify spring-boot-starter-web version? 没有；由Spring-boot-parent-starter 控制的
+Did we specify spring maven plugin version?没有； 由Spring-boot-parent-starter 控制的
+
+
+Spring Data JPA：
+JPA 让我们只写method名字，不需要写sql；
+
+public interface USerRepository extends JpaRepository<User,Long>{
+	@Query("select u from User where u.firstname like %?1")
+	List<User> findByFirstnameEndsWith(String firstname);
+}
+If you wanna implement a set of complex queries,
+
+public interface UserRepository extends JpaRepository<User,Long>{
+	@Query(value = "SELECT * FROM USERS WHERE LASTNAME =?1"，
+	countQuery = "SELECT count(*) FROM USERS WHERE LASTNAME =?1",
+	nativeQuery = true)
+
+	Page<User> findByLastname(String lastname, Pageable pageable);
+}
+
+Java 是否支持多继承？不支持直接的多继承；
+但是可以通过implement不同的interface达到多继承的效果；
+
+RepositoryCustom interface
+
+RepositoryCustomImpl implementation class
+
+interface UserRepositoryCustom{
+	public void someCustomMethod(User user);
+}
+
+class UserRepositoryImpl implements UserRepositoryCustom{
+	public void someCustomMethod(User user){
+		//Your custom implementation
+	}
+}
+
+interface UserRepository extends CrudRepository<User,Long> UserRepositoryCustom{
+	//Declare query methods here
+}
+
+Spring Data Repository scanning mechanism
+	Spring is instructed to scan repositories and all its subpackages for 
+	interfaces extending Repository or one of its subinterfaces.
+
+	For each interface found , the infrastructure registers the persistence technology-specific, 
+	FactoryBean to create the appropriate proxies that handle invocations of the query methods.
+
+Spring Data Repository scanning mechanism:
+	Each bean is registered under a bean name that is derived from the 
+	interface name, so an interface of LocationRepository would be registered under LocationRepository
+
+	The base-package attribute allows wildcards, so that you can have a pattern
+	of scanned packages
+
+Entity is used to annotate this bean is an entity bean that will be persisted；
+Table is used to annotate the object table relationship for this class;
+
+Method Param and type conversion:
+1,String-based values extracted from the request including request
+parameters, path variables, request headers, and cookie values may
+need to be converted to the target type of the method parameter or field
+(e.g., binding a request parameter to a field in an @ModelAttribute
+parameter) they’re bound to.
+2.If the target type is not String, Spring automatically converts to the
+appropriate type. All simple types such as int, long, Date, etc. are
+supported
+
+Method Param and type conversion:
+You can further customize the conversion process through a
+WebDataBinder (see the section called “Customizing
+WebDataBinder initialization”) or by registering Formatters with
+the FormattingConversionService
+
+
+组织Bean的生成的一个好的方法:
+如果是service ，controller rest Controller尽量用Annotation去做；
+如果有比较复杂的init 过程，建议用Java 去生成；
+
+尽量在class configuration里面生成bean；
+
+@Controller
+public class MyFormController{
+	@InitBinder
+	protected void initBinder(WebDataBinder binder){
+		SimpleDateFormat dataFormat = new SimpleDataFormat("yyyy-MM-dd");
+		dataFormat.setLenient(false);
+		binder.registerCustomEditor(Date.class,new CustomDateEditor(dateFormat, false));
+	}
+}
+
+@EnableWebMvc
+○ Spring 3 style type conversion through a ConversionService instance in addition to the JavaBeans
+PropertyEditors used for Data Binding.
+○ Support for formatting Number fields using the @NumberFormat annotation through the ConversionService.
+○ Support for formatting Date, Calendar, Long, and Joda Time fields using the @DateTimeFormat annotation.
+○ Support for validating @Controller inputs with @Valid, if a JSR-303 Provider is present on the classpath.
+○ HttpMessageConverter support for @RequestBody method parameters and @ResponseBody method return
+values from @RequestMapping or @ExceptionHandler methods.
+○ This is the complete list of HttpMessageConverters set up by mvc:annotation-driven:
+○ ByteArrayHttpMessageConverter converts byte arrays.
+○ StringHttpMessageConverter converts strings
+○ ResourceHttpMessageConverter converts to/from org.springframework.core.io.Resource for all media types.
+○ SourceHttpMessageConverter converts to/from a javax.xml.transform.Source.
+○ FormHttpMessageConverter converts form data to/from a MultiValueMap<String, String>.
+○ Jaxb2RootElementHttpMessageConverter converts Java objects to/from XML — added if JAXB2 is present
+and Jackson 2 XML extension is not present on the classpath.
+○ MappingJackson2HttpMessageConverter converts to/from JSON — added if Jackson 2 is present on the
+classpath.
+○ MappingJackson2XmlHttpMessageConverter converts to/from XML — added if Jackson 2 XML extension is
+present on the classpath.
+○ AtomFeedHttpMessageConverter converts Atom feeds — added if Rome is present on the classpath.
+○ RssChannelHttpMessageConverter converts RSS feeds — added if Rome is present on the classpath
+
+
+Spring Boot: 
+● HttpMessageConverter and Custom Jackson Object Mapper
+● Spring MVC (client and server side) uses HttpMessageConverters to
+negotiate content conversion in an HTTP exchange. If Jackson is on
+the classpath you already get the default converter(s) provided by
+Jackson2ObjectMapperBuilder, an instance of which is autoconfigured
+for you.
+
+HttpMessageConverter and Custom Jackson Object Mapper
+If you want to customize with Spring Boot:
+
+@Bean
+public Jackson2ObjectMapperBuilder jacksonBuilder(){
+	Jackson2ObjectMappingBuilder b = new Jackson2ObjectMapperBuilder();
+	b.indentOutput(true).dateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+	return b;
+}
+Spring AOP:自己写spring library 的时候用得比较多；做全局配置用的多；
+● Aspect: a modularization of a concern that cuts across multiple
+classes
+● Join point: a point during the execution of a program, such as the
+execution of a method or the handling of an exception. In Spring AOP,
+a join point always represents a method execution.
+● Advice: action taken by an aspect at a particular join point. Different
+types of advice include "around," "before" and "after" advice.
+● Pointcut: a predicate that matches join points. Advice is associated
+with a pointcut expression and runs at any join point matched by the
+pointcut (for example, the execution of a method with a certain name)
+
+Spring AOP
+● Target object: object being advised by one or more aspects. Also
+referred to as the advised object
+● AOP proxy: an object created by the AOP framework in order to
+implement the aspect contracts (advise method executions and so on)
+
+● Annotation point cut
+● @annotation - limits matching to join points where the subject of the
+join point (method being executed in Spring AOP) has the given
+annotation
+不推荐使用AOP，乱用AOP的话 代码维护起来会非常难；代码执行之前做了很多customization；不了解程序整个执行流程，解bug 会很难；具体业务逻辑的实现不推荐AOP；
+利用Spring本身的Annotation来做一些东西；深入到Spring 底层的改造的话有些时候要用AOP；
+多去想想程序的可维护性；
+
+
+
