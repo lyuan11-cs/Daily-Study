@@ -1,0 +1,107 @@
+What is WebSocket?(WebSocket是一个协议)
+HTTP不支持push； 
+每隔10秒钟从client 端发送请求到server端；（Basic pulling）非高效
+WebSocket is a computer communications protocol, providing full-duplex（全双工） communication channels over a single TCP connection.
+
+Why do we need WebSocket?
+	Think about HTTP
+	Pull only
+How to enable "push" function without WebSocket?
+
+WebSocket and HTTP:
+The WebSocket Protocol is an independent TCP-based protocol. Its only repationship to HTTP is that its handshake is interpreted by HTTP servers as an Upgrade request
+
+Two way communication;
+
+WebSocket Programming model:
+Server;
+Client;
+
+Compare WebSocket with REST
+1.REST
+	Many URLs, handful of verbs, links stateless
+2.WebSocket
+	a WebSocket application may use a single URL only for the initial HTTP handshake. All messages thereafter share and flow on the same TCP connection. This points to an entirely different,asynchronous, event-driven,messaging architecture. 
+
+Messaging Architecture:
+WebSocket does imply a messaging architecture but does not mandate the use of any specific messaging protocol. It is a very thin layer over TCP that transforms a stream of bytes into a stream of messages(either text or binary) and not much more. It is up to applications to interpret the meaning of a message.
+
+Low level protocal, like Servlet; 
+
+STOMP:
+	Simple Text Oriented Messaging Protocol;(STOMP)
+	STOMP is a simple interoperable protocol designed for asynchronous message passing between clients via mediating servers. It defines a text based wire-format for messages passed between these clients and servers;
+
+How to use STOMP over WebSocket?
+
+1.var url = "ws: //localhost:61614/stomp";
+  var client = Stomp.client(url);
+
+2.<script src = > 
+	var
+	var client = 
+	</script>
+
+When to use WebSocket?
+	client and server need to exchange events at high frequency and low latency
+	What about high frequency with high latency?
+	what about low frequency with low latency?
+
+Socket 与WebSocket
+
+WebSocket是在网络下的socket，设计原理类似； 
+
+Spring WebSocket
+
+Message flow with WebSocket Message Broker
+
+
+The HAL browser;
+HAL browser如果只能用dependency；
+postman是一个general 的HTTP 的client；
+
+Docker rather than MongoDB； 
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigure{
+	
+}
+
+什么时候选择MySQL database？ 什么时候选择NoSQl database？
+选择MySql： 
+1.如果对transactional 有要求的，
+
+2.如果对Structural Data
+
+3.如果data volumn 不是很大，对transactional要求很高；
+选择NoSQL：
+1.NoSQL 处理比较大的数据； 扩展性比较好；MongoDB等；
+2.处理No-structural data比较好；
+
+学习新的数据存储： 
+如何学习一个新的数据存储，两个方面去学习:
+
+数据是怎么存的？
+数据是怎么查询或者是取的？
+
+Message Delivery Guarantee：
+At least once; 
+at most once;
+exactly once;
+
+
+HTTP的大概过程：
+send/request 一个HTTP的请求；
+
+写method 加与不加final 的区别
+
+
+implements & extend 的区别； 
+
+yml 用的很多进行配置 .yml
+
+
+
+
+
+
