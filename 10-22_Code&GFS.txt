@@ -1,0 +1,172 @@
+Lesson 5:Code Lab
+Step:
+	1.Install & Init
+	2.App
+	3.NewsPanel
+	4.NewsCard
+	5.Continuous loading news
+		a.Server-side: Rest API
+		b.Client-Side
+	如何实现新闻不断的加载；
+
+框架：
+https://github.com/facebook/create-react-app
+
+Build under MacBook：
+sudo npm install -g create-react-app
+
+create-react-app tap-news
+
+cd tap-news/
+
+npm start
+
+npm install --save materialize-css
+
+cp ~/Desktop/logo.png ./public/
+
+express generator
+
+sudo npm install  -g express-generator
+
+express server
+
+npm start
+
+sudo npm install -g nodemon
+
+npm run build
+
+debounce: 去抖动
+
+firefox: Shift + F4;
+
+var str = "hello";
+console.log(str + "lei");
+console.log("$")
+
+Amazon oncall很著名的；每个公司都有oncall；
+
+随着docker越来越普及，软件部署越来越简单，运维人员少了
+
+AWS越来越好用，等等；
+
+firehose
+
+Google File System
+分布式系统的方法；
+
+How to save a file?
+1 Block = 1024 Bytes
+如何在硬盘上存一个文件：
+
+源信息:
+文件名，时间，文件大小，创建时间等等；
+文件中存放的数据： blocks；
+windows中的资源管理器；
+
+还需要一个表去记录东西都在哪儿；叫index， 也是源信息的一部分；
+
+How to save a large file?
+Chunks: 大块，大的Block；
+GFS里面 1 Chunk = 64 * 1024 KB = 64MB = 65536 Blocks
+这样的话index变少；
+
+less metadata
+Less network traffic
+Not small file friendly
+当文件不到1个Chunk的时候，会占一个Chunk；
+
+
+How to save a huge file?
+文件大到一块硬盘存不了；
+分开存，但是怎么保存文件的源信息？
+
+首先有一台master机器，另外几台机器存储真是的数据；在master建立索引，读一块，去找在哪台机器上；
+解决了存Huge file的需求
+
+Master+ many Chunk Servers
+Problem： Any Chunk change will update master
+
+How to reduce master's data and traffic?
+还是master 和chunk server 的结构， 但是index 的存储结构改变一下；
+
+在master只存在哪一台chunk机器上，然后在chunk上存储具体的地址；只有将chunks删掉才需要更改master上的index； 如果只是修改，就不需要：
+Master does not save chunk offset
+
+Less data
+Less Traffic;
+
+How to detect data error?
+文件系统的bug：
+数据错误；
+
+如何发现数据存错了： 
+存一个Metadata（校验和）
+Block0 -> checksum
+Block1 -> checksum
+Block2 -> checksum
+
+每个chunk里面分成很多个Block
+
+1 chunk = list of blocks
+1 block = 64 KB
+Checksum for each block
+1 checksum = 32 bits
+1TB data's checksum size = 64MB
+Verify checksum when reading data
+
+数据备份
+同一块存到三台机器上；
+How to choose where to store:
+	Least disk usage
+	Balance the new data
+	Rack 2 + 1 
+
+How to detece Chunk Server down?
+HeartBeat
+
+每一小时或者每一天给master发一条消息，如果一直发消息就活着；
+如果没发消息，就死了
+
+
+Repair priority is based on the number of replicas
+
+How to avoid hot spot?
+避免把所有的东西存到一台机器上；
+热门数据；大量请求仍然负担不起；
+
+Replicate a chunk into more replicas
+
+Fill the Chunk Server with more space and bandwidth
+
+How to read data
+1.(Filename, chunk index) 索引文件；一个文件包含了哪些chunk；
+拿到一个列表，然后一一看文件存在哪里；
+
+2.(Chunk handle, chunk locations)
+
+3.(chunk handle, byte range)
+
+4. Chunk data
+
+How to write data
+1.I need the replicas of (chunk 2ef0)
+
+2.The primary is CS3, the replicas are CS0 and CS5
+
+
+3.1 Cache (2ef0)Secondary replica A
+3.2 Cache (2ef0)primary replica
+3.3 Cache(2ef0) Secondary replica B
+3.4 (2ef0) is cached
+3.5 (2ef0) is cached
+3.6 (2ef0) is cached
+
+4.All is cached
+5.write(2ef0)
+5.write(2ef0)
+6.Done 
+7.Done
+任何一步出错，所有人撤回所有请求，然后服务器告诉失败
+
