@@ -1,0 +1,326 @@
+Collaborative Online Judge System Design
+
+HTML
+Bootstrap
+JavaScript
+AngularJS
+Node.js
+
+Scenario: case/interface
+
+Necessary: Constraint/hypothesis
+
+限定条件，假设；有多少资源，处理多少请求；
+
+Application: service/algorithm;
+
+Kilobit： data
+Evolve： 
+
+Problems: 
+	CRUD: create,  read, update, delete; 
+
+Editing of Code;
+	Collaborative;
+
+Submit Code
+	Execute Code
+	Show Result
+
+Necessary: 
+	Daily active user
+
+Daily active user; 
+	100,000
+
+Lookup problems：
+	per day: 100,000 * 100% (function usage) * 3(function frequency) = 300,000
+	per second: 300,000/86400 = 3.5
+	Peak per second: 3.5 * 10 = 35
+
+Editing:
+	Average concurrent users: 100,000 * 60 * 60 /86400 = 416; 
+	Per second : 400 * 50% (function usage) * 10(function frequency) = 2,000
+	Peak per second: 2,000 * 10 = 20,000
+Submit Code: 
+	Per second: 400 * 1%(function usage) * 1(function frequency) = 4
+Application:
+
+Web Browser(Angular)
+	WebSocket
+	Nginx
+Frontend   -- Node jS server  Redis  <-->  MongoDB
+                 
+Online Judger
+	Executor & Judger
+
+Kilobit - Data:
+Editing：
+	Per second : 400 * 50% (function usage) * 10(function frequency) = 2,000
+	Data Size = 2,000 * 1KB = 2MB
+	Peak per second: 20MB;
+
+Submit Code: 
+	Per second: 400 * 1%(function usage) * 1(function frequency) = 4
+
+
+Evolve - Follow up
+1. Can everyone add problem?
+	做用户管理系统； User Authentication; User Authorization;
+2.What if people are changing one place at the same time?
+	处理冲突，处理谁先写，谁后写
+3.Easier idea？
+	解决冲突： 可以用锁；
+4.Faster on storing the doc？
+	如何增加读取速度；
+5.How to isolate?
+	恶意代码；真正的代码要孤立出来；
+6.How to scale up?
+
+
+HTML，CSS
+Bootstrap
+JavaScript
+AngularJS
+Node.js
+
+HTML：
+HTML是一个树形结构Tree(DOM)
+<html lang = "en">
+	<head>
+		<title>My title</title>
+	</head>
+	<body>
+		<a href="#">My link</a>
+		<h1>My header</h1>
+	</body>
+</html>
+
+Elements & Tags:
+Elements 是由Tags包裹的东西； 
+<>里面的东西就是tags； 
+
+有的element只有start tags； 名字一样加上一个/的叫end tag；
+
+<> 叫tag；由start/end tags包裹起来的叫elements
+
+<Item operational = "1">start tag
+Item:tag name  operational: attribute name
+			   "1" : attribute value
+			   	operational = "1":attribute
+</Item> End tag
+
+
+哪些常用的tag 以及哪些常用的element；
+
+CSS（Cascading Style Sheets）
+不需要掌握任何CSS的语法：
+原因1 可以直接Google；
+Full-stack一般不会做CSS工作； 有时候不需要懂CSS的rule就可以做出很好看的网页了’
+
+引入CSS：
+Inline： 
+	<h1 style = "color:blue;"> This is a Blue Heading</h1>
+External
+	<head><link rel = "stylesheet" href = "styles.css"></head>
+
+	<html>
+	<head>
+	<title>My Web Page</title>
+	<link rel = "sytlesheet" type = "text/css" href = "whatever.css">
+	</head>
+	<body>
+	</body>
+	</html>
+
+
+Bootstrap: 
+Responsive Web Design: 
+	基于不同场景进行设计
+	Grid system
+Based on Less
+	Less: lesscss.org
+	可以让写css 更轻松的东西；
+JavaScript:
+	没有速成的办法，但是精通很难；
+	Object：
+var obj = {
+	name : "Carrot",
+	"for" : "Max",
+	details: {
+	color:"orange",
+	size : 12
+	}
+}
+
+> obj.details.color 
+> obj["details"]["size"]
+key 一定是字符串；
+
+JavaScript function：
+Function is a first-class object:
+	A function is an instance of the Object type
+	You can store the function in a variable
+	You can pass the function as a parameter to another function
+	You can return the function from a function
+
+JavaScript:
+Event:
+Event handler function;
+Event: 
+
+Object       Event          User Action
+Text field   onBlur        Tab away from window,frame or form element.
+							USer onBlur when you tab out of a field
+			 onFocus        Tab to a window, frame or form element
+			 onSelect       Select text. If a form has multiple choices, 
+			 				you must use onSelect
+			 onChange       Change text and click
+
+Button       onClick        Mouse click
+Checkbox     onClick        Mouse Click
+Radio button onClick        Mouse Click
+Link         OnMouseOver    Move mouse pointer over.
+			 onClick        Mouse click
+
+Window       onLoad         When the browser finishes loading a window or all 							  frames in a window
+			 onUnload	    When you exit a window
+JavaScript 有大量的event被trigger；
+Event-driven
+
+Callback
+
+function TestCtor(){
+	//this -created object
+	this.testProp = 'hello';
+
+	setTimeout(function(){
+		//this  -window
+		console.log(this.testProp);
+
+	},3000);
+}
+
+var test = new TestCtor();
+
+Object, function,event-driven, callback;
+
+var a = function(haha){
+	console.log(haha)
+}
+var b = function(func){
+	func("hehe");
+}
+
+
+AngularJS: 
+AngularJS的general idea
+
+MVC， MVVM， MV*
+MVC：
+Model-View-Controller(MVC)(Spring)
+1.MVC模式是软件工程中的一种软件架构模式
+2.把软件系统分为三个基本部分：模型(Model)，视图(View) 和控制器(Controller)
+
+Model(模型)
+	Data or Data + Algorithm
+View(视图)
+	Web Page(网页) + UI(用户界面)
+Controller(控制器)
+	request/Event/Action的Router/handler
+
+MVP模式：(Android Apps)
+Model-View-Presenter
+
+View
+Presenter
+Model
+
+Model-View-ViewModel(e.g: Ember.js)
+View
+ViewModel
+Model
+
+Model-View-*(Whatever)
+Example: Angular.js
+
+AngularJS:
+
+Two Day Data Binding
+
+
+
+安装ubuntu：
+1.下载iso镜像到本地： desktop版本； 安装virtual box；
+2.new 起名字lei-project ；linux-ubuntu-64bit；
+3.分配内存； 分配4GB以上内存
+4.Create a virtual hard disk now
+5.VDI（无所谓哪个）
+6.storage: Dynamically allocated;
+7.硬盘分配40GB 以上；
+8.启动之前setting;
+8.1在storage里面加载光盘；
+8.2General-> advance:shared clipboard & Drag'n'Drop: Bidirectional
+System 内存；
+Processor分配系统内核；分配4个内核；
+
+然后可以安装了；邮件start->normal start；
+
+Install Ubuntu；
+暂时不做update；
+Erase disk and install ubuntu； 因为是新的ubuntu；
+时区，name与密码要记住；
+
+
+Device-> Insert guest addition CD image..->run
+
+open terminal
+install Google chrome
+
+sudo apt update
+
+
+sudo apt install terminator    terminal的替代品；
+
+sudo apt install git
+
+atom.io 去安装一个editor；
+
+
+sudo apt install curl
+
+安装node js:
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+go to nodejs; installing Node.js via package
+
+在github建立目录，在本地创建repository；
+mkdir part-1
+
+Angular2
+
+in the folder part-1: 
+cli.angular.io
+
+sudo npm install -g angular -cli
+sudo npm install -g @angular/cli
+sudo apt install ng-common
+
+ng new oj-client
+
+ng serve
+
+
+localhost:4200
+
+
+
+
+
+
+
+
+
+
+
