@@ -1,0 +1,742 @@
+Introduction to Front-end
+What is Front-end:
+The Front-end is everything involved with what the user sees, including design and some languages like HTML and CSS
+
+History of Front-end:
+Web 1.0: 所有的网站都是静态的
+	Static HTML 
+world's first web page: info.cern.ch
+Simple interaction: single round to fetch HTML file
+No front-end concept
+
+1991By CERN : European Particle Physics Laboratory
+
+HTML: Hyper Text Markup Language. The markup language for the web
+
+URI:
+Uniform Resource Identifier. A kind of "address" that is unique and used to identify to each resource on the Web. It is also commonly called a URL
+
+
+HTTP: 
+Hypertext Transfer Protocol. Allow for the retrieval of linked resources from access the Web;
+
+1996 : JavaScript
+(Nothing to do with Java) JavaScript is the programming language of HTML and the web
+
+CSS:
+Cascading Style Sheets(CSS) is a style sheet language used for describing the presentation of a document written in a HTML
+
+CGI & Servlet:
+	Dynamically generate content;
+Common Gateway Interface(CGI)
+动态生成，完成逻辑事务的一个程序；
+CGI的问题是；每次一个browser来一个请求就要开一个instance；无法很好处理并发和高吞吐量的要求；
+
+Java Servlet：
+
+ASP,JSP 和PHP： 三驾马车；
+	Combine HTML and Programming language；
+JSP结合了HTML 和Java
+
+Java Server Page（JSP):只需要关注页面上需要更改的地方;
+
+Active Server Page(ASP)
+	ASP.NET
+Professional Hypertext Preprocessor(PHP)
+
+
+Ajax & JQuery:
+Ajax: Asynchronous JavaScript and XML
+	Update a web page without reloading the page;
+	Request data from a server- after the page has loaded;
+	Now it is possible for client(browser) to handle data;
+
+JQuery:
+A JavaScript library which supports Ajax development;
+
+MVC: (Model, View, Controller)
+	Server-side design pattern
+
+How MVC works:
+	1.USer makes a request to Controller
+	2.Controller accepts request and manipulates Model
+	3.Model updates View
+	4.User sees View
+Server-side MVC
+Browser sees generated HTML/CSS/JavaScript
+MVC makes server-side development manageable
+
+Front-end/Back-end workflow:
+1.Front-end (UI/UX) focuses on HTML/CSS/JavaScript design.
+2.Back-end works on View(template) based on UI/UX work
+
+Even for a small line of change ,we need to involve back-end guy;
+
+Node: 
+CLiend-side MVC
+Only data transferred between browser and server
+
+
+Front-end Frameworks:
+Angular : 双向数据绑定；
+JavaScript-based open-source front-end web application framework;
+MVVM(Model-View-ViewModel)
+Two-way data binding
+
+React：是一个单向的数据绑定；
+	JavaScript library providing a view for data rendered as HTML
+
+React: 
+One-way data flow:
+	A component can not directly modify any properties passed to it.
+Virtual DOM:
+	In-memory data structure cache, computes the resulting differences, and then updates the browser's displayed DOM efficiently.
+JSX(JavaScript XML)(JavaScript 的一个扩展)
+	A JavaScript extension syntax allowing quoting of HTML and using HTML tag syntax;
+
+Node.js & Express:
+Multithreading:
+	More is NOT always better.
+	There is a threshold beyond which the throughput decreases.
+	Consume large amounts of memory as each thread will take a individual stack.
+	Context switching is expensive if have too many threads.
+
+Event Driven
+	One thread uses an event loop to handle all events from I/O operations of connections and requests
+	Non-blocking I/O and asynchronous callback
+
+
+Event Driven:
+	Non-blocking
+	Single thread-no context switching
+
+Is NPM safe?
+
+Why we need Express?
+An example of HTTP server in Node.js.
+
+var http = require("http")
+
+//Build the server
+
+var app = http.createServer(
+	function(request,response){
+		response.writeHead(200,{
+			'Content-Type': 'text/plain'
+		});
+		response.end("Hello world!");
+	});
+app.listen(2000,'localhost');
+
+Express 是用到的框架；
+
+How to route?(bad version)
+var http = require("http")
+
+//Build the server
+
+var app = http.createServer(
+	function(request,response){
+		if(req.url == '/'){
+			response.writeHead(200,{
+				'Content-Type': 'text/plain'
+			});
+			response.end("Welcome to the homepage!");
+		}
+
+		else if(req.url == '/about'){
+			response.writeHead(200,{
+			'Content-Type': 'text/plain'
+		});
+		response.end("Welcome to the homepage!");
+		}
+		else{
+			response.writeHead(200,{
+			'Content-Type': 'text/plain'
+		});
+		response.end("404 Error!");
+		}
+	});
+app.listen(2000,'localhost');
+
+
+比较复杂的网站
+
+Express:
+
+We need a Middleware!
+Middleware is a something bridging different components;
+
+A middleware framework for Node
+
+var connect = require('connect');
+vat http = require('http');
+var app = connect();
+
+app.use(connect.logger());定义常用的middleware； log 一些信息
+app.use(connect.Secutity);
+app.use(connect.Routing);
+
+Rewrite the previous http server using Express routing;
+var connect = require('express');
+vat http = require('http');
+var app = express();
+
+app.get('*',function(request,response,next){
+	response.writeHead(200,{'Content-Type':'text/plain'});
+	next();
+});
+
+
+app.get('/',function(request,response){
+	response.add('Welcome to the homepage!');
+})
+
+app.get('/about',function(request,response){
+	response.add('Welcome to the about page!');
+})
+
+app.get('*',function(request,response){
+	response.end('404');
+})
+
+
+Express：
+Express Routing
+More details:
+Route definition takes the following structure:
+app.METHOD(PATH,HANDLER)
+
+app is an instance of Express
+METHOD is an HTTP request method, in lowercase
+PATH is a path on the server(request)
+HANDLER is the function executed when the route is matched
+
+
+app.METHOD(PATH,HANDLER)
+Get
+app.get('/', function(req,res){
+	res.send('Hello World!')
+})
+Put
+app.put('/user',function(req,res){
+	res.send('Got a PUT request at /user')
+})
+Post
+app.post('/',function(req,res){
+	res.send('Got a POST request')
+})
+Delete
+app.delete('/user',function(req,res){
+	res.send('Got a DELETE request at /user')
+})
+
+Paths can be Strings or regular expressions(inside slash /) (cool regex tool : regexr.com);
+
+Path 					Matched Requests
+‘/about’ 				/about
+‘/ab?cd’ 				abcd, /acd
+‘/ab+cd’ 				/abcd, /abbcd, /abbbcd, /abbbbcd and so on
+‘/ab*cd’ 				/abcd, /abxcd, /ab1234567cd and so on
+‘/ab(cd)?e’				 /abe, /abcde
+/a/ (no quotation mark)	 any requests path with ‘a’ inside
+/.*fly$/ (no quotation mark) 	fly, butterfly, dragonfly and so on. (fly must be at the end)
+
+app.METHOD(PATH,HANDLER): Handler call back 0 & call back 1
+You can pass one or multiple handlers(use next() to pass to next handler)
+中间键
+var handler_1 = function(request,response,next){
+	console.log('CB0')
+	next()
+
+}
+
+var handler_2 = function(request,response,next){
+	console.log('CB1')
+	next()
+}
+
+app.get('/index',[handler_1,handler_2],function(request,response,next){ // 三个中间键； 中间任何一个return或者报错都执行不了了；
+	console.log('the response will be sent by the next function...')
+	next()
+}, function（request, response){
+	response.send('Hello World!')
+});
+
+
+app.METHOD(PATH,HANDLER)
+	function(req,res,next)
+
+Method 						Description
+res.download() 			Prompt a file to be downloaded.
+res.end() 				End the response process.
+res.json()				 Send a JSON response.
+res.jsonp()*			 Send a JSON with JSONP support. Json with padding;因为same religion policy； 同一来源的policy；同一域名或者网站上的代码；
+执行一个域名上的代码执行一半，去执行另一个域名上的代码；同一来源policy的存在；不能运行该来源之外的代码；而Jsonp 是可以绕过这一个限制的；方法名配上一些参数；
+
+res.redirect() 			Redirect a request.
+res.render() 			Render a view template.   render一个引擎使用， 是一个template的用法；
+res.send() 				Send a response of various types.
+res.sendFile() 			Send a file.
+res.sendStatus()		Set status code and send the String representation.
+same origin policy 的问题是很advanced 的topic
+
+Express
+You can create modular router using Router
+
+var express = require('express')
+var router = express.Router()
+
+//middleware that is specific to this router
+router.use(function timeLog(req,res,next){
+	console.log('Time: ', Date.now())
+	next()
+})
+
+//define the home page route
+router.get('/',function(req,res){
+	res.send('Birds home page')
+})
+
+//define the about route
+
+router.get('/about', function(req,res){
+	res.send('About birds')
+})
+
+
+module.exports = router
+
+
+app.js
+var birds = require('./birds')
+
+app.use('/birds',birds)
+
+JavaScript is NOT a language？
+
+JavaScript is an implementation of a standard language
+ActionScript is another implementation
+The standard language is ECMAScript(ES)
+
+
+
+ES2015:
+The change of ES5 and ES6: arror function,
+//(param1,param2,...,paramN) => expression
+
+//ES5
+
+var multiply = function(x,y){
+    return x*y;
+};
+
+
+//ES6
+var multiply = (x,y) => { return x * y};
+
+Arrow_function_2.js:如果function只是一个expression； 可以去掉大括号
+//curly brackets and 'return' can be ignored if only one expression 
+var multiply = (x,y) => x * y;
+
+//Parentheses are optional when only one parameter is presend：参数只有一个，小括号也可以去掉；
+var addOne = x => x + 1;
+//Parentheses are required when no parameters are present.
+var printHello = () => { console.log('Hello'); }
+Arrow_function_3.js:
+/*
+*The other benefit of using arrow functions with promises/callbacks is 
+*that it reduces the confusion surrounding the this keyword. In code with
+* multiple nested functions, it can be difficult to keep track of and 
+* remember to bind the correct this context. In ES5, you can use workarounds
+* like the .bind method(which is slow) or creating a closure using
+* var self = this;
+*/
+
+//The issue in ES5
+var myObj = {
+	oneFunction: function (){...},
+
+	getAsyncData: function (callback){ //异步函数
+		callback();
+	},
+	render: function(){
+		this.getAsyncData(function (){  
+			this.oneFunction();
+			//error : Object has no method 'oneFunction' ：this不是同一个this；scope 和closure的概念在里面；
+		});
+	}
+};
+
+myObj.render();
+Arrow_function_4.js:ES5可以用that的方式解决
+
+var myObj = {
+	oneFunction: function() {....},
+
+	getAsyncData: function(callback){
+		callback();
+	},
+	render: function(){
+		var that = this;
+		this.getAsyncData(function () {
+			that.oneFunction();
+		});
+	}
+};
+myObj.render();
+
+Arrow_function_5.js:ES5用bind的方法解决；
+//Use 'bind' to pass the context.
+Arrow_function_5.js:
+var myObj = {
+	oneFunction: function(){...},
+
+	getAsyncData: function (callback){
+		callback();
+	},
+	render: function (){
+		this.getAsyncData(function (){
+			this.oneFunction();
+			this.anotherFunction();
+		}.bind(this));
+	}
+};
+
+myObj.render();
+
+Arrow_function_6.js:ES6 用arrow function去定义
+//In ES6, 'this' context will be retained if you use arrow function.
+var myObj = {
+	oneFunction: function(){...},
+
+	getAsyncData: function (callback){
+		callback();
+	},
+	render: function (){
+		this.getAsyncData(() => {
+			this.oneFunction();
+			this.anotherFunction();
+		});
+	}
+};
+
+myObj.render();
+
+class_1.js: 
+/
+ *In ES2015, classes provide constructors, static and instance methods, 
+ *inheritance, and the ability to extend a class by another class. 
+ *Best of all, you do not have to call classes "functions" anymore.
+ */
+
+ class Person{
+ 	constructor(firstName,lastName){
+ 		this.firstName =firstName;
+ 		this.lastName = lastName;
+ 	}
+ }
+
+ var people = new Person('Lei', 'Yuan');
+
+class_2.js: 
+/
+ *Inheritance
+ */
+  class Person{
+ 	constructor(firstName,lastName){
+ 		this.firstName =firstName;
+ 		this.lastName = lastName;
+ 	}
+ }
+
+//Extends
+class PetOwner extends Person {
+	constructor(firstName,lastName,pets){
+		super(firstName,lastName);
+		this.pets = pets;
+	}
+}
+var people = new PetOwner('Lei', 'Yuan',['haha']);
+
+class_3.js:
+  class Person{
+ 	constructor(firstName,lastName){
+ 		this.firstName =firstName;
+ 		this.lastName = lastName;
+ 	}
+
+ 	get fullName(){
+ 		return this.firstName + ' ' + this.lastName;
+ 	}
+
+ 	set middleName(string){
+ 		this.middleName = string;
+ 	}
+ }
+
+ var people = new Person('Lei','Yuan');
+ people.middleName = 'Ha';
+ people.fullName;    //"Lei Yuan"
+
+
+const_let_1.js:
+/
+ *const allows you to declare a single assignment variable lexically bount.
+ *That just means that you can only assign once a value in a variable, scoped at the block level.
+ */
+//Error 1
+const foo; //SyntaxError, variable needs to be assigned to something.
+
+//Error 2
+const foo = 'hello';
+foo = 'world'; // SyntaxError, variable cannot be re-assigned.
+
+//Block scope  const的作用域；
+function fn(){ 
+	const foo = "hello";
+	if(true){
+		const foo = "world";
+		console.log(foo); //print 'world'
+	}
+	console.log(foo); //print 'hello'
+}
+
+
+const_let_2.js
+/
+ * let allows you to do the same as const without the single assignment constraint.
+ * It is scoped to the block level.
+ */
+
+//This is OK(foo is undefined)
+
+let foo;作用域是一个block； let 可以多次赋值，而且可以是空值的；作用域变成了block的作用域；
+
+function fn(){
+	let foo = "a";
+	var bar = "b";
+	if(true){
+		let foo = "c";
+		bar = 'd';
+		console.log(foo); 
+		console.log(bar);
+	}
+	console.log(foo);//print 'a'
+	console.log(bar);// print 'b' 
+}
+iterator.js 遍历器
+/
+*ES6 supports iterator which is similar to "for ... in ..." in other languages.
+*/
+
+/*
+//Using forEach()
+var a = [1,2,3];
+a.forEach(function (element){
+	console.log(element);
+});
+
+//Using a for loop
+var a = [1,2,3];
+for(var i = 0; i < a.length; ++i){
+	console.log(a[i]);
+}
+
+
+/*ES6*/
+//Behind the scenes, this will get an iterator from the array
+// and loop through it, getting values from it.
+for(let element of [1,2,3]){
+	console.log(element);
+}
+
+
+module_1.js
+/
+*ES5 - CommonJS的标准
+*CommonJS is a project with the goal of specifying an ecosystem
+*for JavaScript outside the browser(like Node.js)
+*The commonJS Modules/1.1 spec standardized these scoped variables:
+* require,exports and module.
+*/
+
+//package/lib is a dependency we require
+var lib = require("package/lib");
+//behavior for our module
+function foo(){
+	lib.log("hello world!");
+}
+
+//export (expose) foo to other modules
+exports.foo = foo;
+
+module_2.js
+//ES5 - CommonJS
+var math = require('lib/math');
+console.log('2π = ' + math.sum(math.pi, math.pi));
+
+//ES6 import是ES6的标准；
+import math from 'lib/math'; import 的方式；
+console.log('2π = ' + math.sum(math.pi,math.pi));
+
+promise.js
+/
+*Promises, have been around quite a while and are defined by
+*a spec called Promises/A+. ES6 has adopted this spec for its
+*Promise implementation.
+*
+*Promises give us a way to handle asynchronous processing in 
+*a more synchronous fashion.
+*/
+
+var p = new Promise(function(resolve, reject){
+	if(/*condition*/){
+		resolve(/* value */); //fulfilled successfully
+	}
+	else{
+		reject(/* reason*/); //error, rejected
+	}
+});
+
+CDN
+
+Using codepen.io
+
+HTML:
+<div id = 'app'>
+</div>
+CSS:
+$blue: #a3d5d3;
+
+body {
+  background-color: $blue;
+}
+
+JS:
+ReactDOM.render(
+  <h1>Hello,World!</h1>,
+  document.getElementById('app')
+);
+
+
+
+another JS:（Babel）
+class HelloWorld extends React.Component {
+  render(){
+      return(
+      <div> 
+          <h1>Hello World</h1>
+        <div>);
+  }
+}
+const mainElement = document.getElementById("app");
+ReactDOM.render(React.createElement(HelloWorld),mainElement);
+
+
+在JS里面嵌套HTML；
+
+
+Babel是编译器； Web pack是打包工具；
+
+another JS:
+function getGreeting(user){
+	if(user){
+		return <h1>Hello, {user} !</h1>;
+	}
+	return <h1>Hello,Stranger.</h1>;
+}
+ReactDOM.render(
+	getGreeting('Hehe'),
+	document.getElementById('app')
+);
+
+Another JS:
+function tick(){
+	const element = (
+		<div>
+			<h1>Hello,world!</h1>
+			<h2>It is {new Date().toLocaleTimeString()}.</h2>
+		</div>
+
+	);
+	ReactDOM.render(
+		element,
+		document.getElementById('app')
+		);
+}
+
+setInterval(tick,1000);
+Another JS: props
+
+class Welcome extends React.Componnet{
+	render(){
+		return <h1> Hello, {this.props.name}. Myage is  { this.props.age}.</h1>;
+	}
+}
+
+ReactDOM.render(
+<Welcome name = "Sara" age = "18" />,
+document.getElementById('app')
+);
+
+Another JS: state & props:
+class Clock extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {date: new Date()};
+	}
+	componentDidMount(){
+		this.timerID = setInterval(
+			() => this.tick(),1000);
+	}
+	tick(){
+		this.setState({
+			date:new Date()
+		});
+	}
+}
+
+Another JS: 
+function ActionLink(){
+	function handleClick(e){
+		e.preventDefault();
+	}
+
+	return(
+		<a href="www.google.com" onClick={handleClick}>
+			Click me
+		</a>
+		);
+}
+
+ReactDOM.render(
+	<ActionLink />,
+	document.getElemtentById('app')
+	);
+
+Another JS:
+class Toggle extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {isToggleOn: true};
+
+		//This binding is necessary to make `this` work in the callback
+		this.handleClick = this.handleClick.bind(this);
+	}
+	handleClick(){
+		this.setState(prevState => ({
+			isToggleOn: !prevState.isToggleOn
+		}));
+	}
+	render(){
+		return (
+			<button onClick={this.handleClick}>
+				{this.state.isToggleOn? 'ON': 'OFF'}
+			</button>);
+	}
+}
+
+https://reactjs.org/docs/hello-world.html
+
+
